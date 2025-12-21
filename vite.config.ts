@@ -9,11 +9,18 @@ export default defineConfig({
     monkey({
       entry: 'src/main.ts',
       userscript: {
-        icon: 'https://vitejs.dev/logo.svg',
-        namespace: 'npm/vite-plugin-monkey',
+        version: '1.0.0',
+        author: 'PY-DNG',
+        icon: 'https://kemono.cr/assets/favicon-CPB6l7kH.ico',
+        namespace: 'https://greasyfork.org/zh-CN/users/667968-pyudng',
         match: [
             'http*://*.pixiv.net/*',
         ],
+        "run-at": 'document-start',
+      },
+      server: {
+        open: true,
+        mountGmApi: true,
       },
       build: {
         externalGlobals: {
