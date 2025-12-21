@@ -47,6 +47,21 @@ const rules: Record<string, Record<string, Page>> = {
                 return `https://kemono.cr/fanbox/user/${ userID }`;
             },
         },
+        series: {
+            checker: {
+                type: 'regpath',
+                value: /^\/novel\/series\/\d+$/
+            },
+            async url() {
+                const str_id = location.pathname.match(/^\/novel\/series\/(\d+)$/)![1];
+                const json = await requestJson({
+                    method: 'GET',
+                    url: `https://www.pixiv.net/ajax/novel/series/${ str_id }`,
+                });
+                const userID = json.body.userId as string;
+                return `https://kemono.cr/fanbox/user/${ userID }`;
+            }
+        },
     }
 };
 
