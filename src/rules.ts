@@ -1,9 +1,14 @@
+import { GM_addValueChangeListener } from '$';
+import storage from './storage.js';
 import { Checker, requestJson, getSearchParam } from './utils/main.js';
 
 interface Page {
     checker: Checker | Checker[];
     url: (...args: any[]) => string | Promise<string>;
 };
+
+let domain = storage.get('domain');
+GM_addValueChangeListener('domain', (name, oldValue, newValue, remote) => domain = newValue || 'kemono.cr');
 
 const rules: Record<string, Record<string, Page>> = {
     pixiv: {
@@ -14,7 +19,7 @@ const rules: Record<string, Record<string, Page>> = {
             },
             url() {
                 const userID = location.pathname.match(/^\/users\/(\d+)/)![1];
-                return `https://kemono.cr/fanbox/user/${ userID }`;
+                return `https://${ domain }/fanbox/user/${ userID }`;
             },
         },
         artworks: {
@@ -29,7 +34,7 @@ const rules: Record<string, Record<string, Page>> = {
                     url: `https://www.pixiv.net/ajax/illust/${ str_id }`,
                 });
                 const userID = json.body.userId as string;
-                return `https://kemono.cr/fanbox/user/${ userID }`;
+                return `https://${ domain }/fanbox/user/${ userID }`;
             },
         },
         novel: {
@@ -44,7 +49,7 @@ const rules: Record<string, Record<string, Page>> = {
                     url: `https://www.pixiv.net/ajax/novel/${ str_id }`,
                 });
                 const userID = json.body.userId as string;
-                return `https://kemono.cr/fanbox/user/${ userID }`;
+                return `https://${ domain }/fanbox/user/${ userID }`;
             },
         },
         series: {
@@ -59,7 +64,7 @@ const rules: Record<string, Record<string, Page>> = {
                     url: `https://www.pixiv.net/ajax/novel/series/${ str_id }`,
                 });
                 const userID = json.body.userId as string;
-                return `https://kemono.cr/fanbox/user/${ userID }`;
+                return `https://${ domain }/fanbox/user/${ userID }`;
             }
         },
     }

@@ -2,7 +2,8 @@
     import { ref } from 'vue';
     import { testChecker, URLChangeMonitor } from './utils/main.js';
     import rules from './rules.js';
-    import { GM_getValue, GM_openInTab } from '$';
+    import { GM_openInTab } from '$';
+    import storage from './storage.js';
 
     /** 当前页面是否为支持跳转的页面 */
     const isSupportedPage = ref(false);
@@ -32,10 +33,11 @@
                 if (testChecker(page.checker)) {
                     loading.value = true;
                     const url = await Promise.resolve(page.url());
-                    if (GM_getValue('newtab', true)) {
+                    if (storage.get('newtab')) {
                         GM_openInTab(url, {
                             active: true,
                             insert: true,
+                            setParent: true,
                         });
                     } else {
                         location.assign(url);

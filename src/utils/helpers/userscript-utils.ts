@@ -1,0 +1,137 @@
+import { GM_addValueChangeListener, GM_deleteValue, GM_getValue, GM_listValues, GM_setValue, GmAddValueChangeListenerType, GmValueListenerId } from "$";
+
+export interface GM_Storage {
+    GM_getValue: typeof GM_getValue,
+    GM_setValue: typeof GM_setValue,
+    GM_deleteValue: typeof GM_deleteValue,
+    GM_listValues: typeof GM_listValues,
+    GM_addValueChangeListener: typeof GM_addValueChangeListener,
+}
+
+export class UserscriptStorage<D extends Record<string, any>> {
+    private storage: GM_Storage;
+    private defaultValues: D;
+    private static readonly EmptyValue: unique symbol = Symbol('Empty Value');
+
+    /**
+     * 用户脚本存储管理器
+     * @param storage 访问脚本存储空间的函数/方法
+     * @param defaultValues 脚本存储的默认值对象
+     */
+    constructor(
+        storage: GM_Storage,
+        defaultValues: D,
+    ) {
+        this.storage = storage;
+        this.defaultValues = defaultValues;
+    }
+
+    /**
+     * 读取存储值，当值不存在时返回默认值
+     * @param name 存储键
+     * @param defaultVal 本次调用的默认值，优先级高于创建当前实例时传入的总默认值对象
+     * @returns 
+     */
+    get<
+        K extends string,
+        T = D[K],
+    >(
+        name: K,
+        defaultVal: T | typeof UserscriptStorage.EmptyValue = UserscriptStorage.EmptyValue
+    ):
+        typeof defaultVal extends D[K] ?
+            // 当本次调用默认值类型与默认值对象中此键类型一致时，返回类型为此类型
+            D[K] :
+            // 不一致时
+            (typeof defaultVal extends typeof UserscriptStorage.EmptyValue ?
+                // 本次调用未提供默认值时
+                (K extends keyof D ?
+                    // 默认值对象中存在此键，返回值类型为默认值对象中此键的值
+                    D[K] :
+                    // 默认值对象中无此键时，返回值类型为any（取决于实际已存储的值）
+                    any) :
+                // 本地调用提供了默认值时，返回值类型为本次提供的默认值的类型
+                T
+            )
+    {
+        const EmptyValue: typeof UserscriptStorage.EmptyValue = UserscriptStorage.EmptyValue;
+
+        // 默认值
+        defaultVal = defaultVal !== UserscriptStorage.EmptyValue ?
+            // 若本次调用提供了默认值，则使用本次提供的默认值
+            defaultVal :
+            // 若本次调用未提供默认值
+            Object.hasOwn(this.defaultValues, name) ?
+                // 总默认值对象中有本次访问的键的默认值，就使用它
+                this.defaultValues[name] :
+                // 总默认值对象中也没有本次访问的键的默认值，则默认为空值
+                EmptyValue;
+        
+        // 从脚本存储中读取值
+        const value = this.storage.GM_getValue(name, defaultVal);
+
+        // 当读取到空值时，说明脚本存储中尚无此键，返回undefined
+        // 其余情况则要么读取到了值，要么为上述默认值，可直接返回
+        return (value === EmptyValue ? undefined : value) as unknown as ReturnType<typeof this.get<K, T>>;
+    }
+
+    /**
+     * 写入存储值，当未提供存储值时，将默认值写入存储；若默认值对象中也无此键，则什么都不做  
+     * **注意：写入默认值前请先检查存储中此键是否已有值，否则可能会导致已有值被覆盖**
+     * @param name 存储键
+     * @param value 存储值
+     */
+    set<
+        K extends string,
+    >(
+        name: K,
+        value: (K extends keyof D ? D[K] : any) | typeof UserscriptStorage.EmptyValue = UserscriptStorage.EmptyValue
+    ): void {
+        if (value === UserscriptStorage.EmptyValue) {
+            // 未提供值，写入默认值
+            Object.hasOwn(this.defaultValues, name) &&
+                this.storage.GM_setValue(name, this.defaultValues[name]);
+        } else {
+            // 写入提供的存储值
+            this.storage.GM_setValue(name, value);
+        }
+    }
+
+    /**
+     * 判断存储中是否已**写入**了某键（未写入仅有默认值返回false）
+     * @param name 存储键
+     * @returns 该键是否已写入存储
+     */
+    has(name: string) {
+        const EmptyValue = UserscriptStorage.EmptyValue;
+        return this.storage.GM_getValue(name, EmptyValue) !== EmptyValue;
+    }
+
+    /**
+     * 列出所有存储中可访问的键（默认情况下，包含存储中不存在，但已提供默认值的键）
+     * @param noDefaults 是否排除默认值，仅列出存储中实际存在的键
+     */
+    list(noDefaults: boolean = false): string[] {
+        if (noDefaults) {
+            return this.storage.GM_listValues();
+        } else {
+            const set = new Set<string>();
+            const storageKeys = this.storage.GM_listValues();
+            const defaultKeys = Object.keys(this.defaultValues);
+            [...storageKeys, ...defaultKeys].forEach(key => set.add(key));
+            return Array.from(set);
+        }
+    }
+
+    /**
+     * 删除存储键
+     * @param name 存储键
+     */
+    delete(name: string): void {
+        this.storage.GM_deleteValue(name);
+    }
+
+    watch(name: string, callback: Parameters<GmAddValueChangeListenerType>[1]): GmValueListenerId {
+        return this.storage.GM_addValueChangeListener(name, callback);
+    }
+}
