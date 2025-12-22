@@ -1,0 +1,17 @@
+{
+    "button": {
+        "jump": "Open in Kemono",
+        "loading": "loading..."
+    },
+    "menu": {
+        "newtab": {
+            "true": "[✔] Open in new tab",
+            "false": "[-] Open in new tab",
+            "title": "Open the Kemono page in a new tab or directly redirect the current tab to the Kemono page"
+        },
+        "domain": {
+            "label": "Kemono domain: {domain}",
+            "prompt": "Please set the desired Kemono domain to redirect to:"
+        }
+    }
+}

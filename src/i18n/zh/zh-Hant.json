@@ -1,0 +1,17 @@
+{
+    "button": {
+        "jump": "跳轉到Kemono",
+        "loading": "載入中..."
+    },
+    "menu": {
+        "newtab": {
+            "true": "[✔] 在新標籤頁中打開",
+            "false": "[-] 在新標籤頁中打開",
+            "title": "跳轉到Kemono時，是新增標籤頁打開Kemono頁面，還是直接將目前標籤頁跳轉到Kemono頁面"
+        },
+        "domain": {
+            "label": "Kemono域名: {domain}",
+            "prompt": "請設定希望跳轉的kemono網域："
+        }
+    }
+}

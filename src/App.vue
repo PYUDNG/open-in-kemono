@@ -1,9 +1,13 @@
 <script setup lang="ts">
+    import { useI18n } from 'vue-i18n';
     import { ref } from 'vue';
     import { testChecker, URLChangeMonitor } from './utils/main.js';
     import rules from './rules.js';
     import { GM_openInTab } from '$';
     import storage from './storage.js';
+
+    // Vue i18n
+    const { t } = useI18n();
 
     /** 当前页面是否为支持跳转的页面 */
     const isSupportedPage = ref(false);
@@ -58,7 +62,7 @@
             :class="{ ['oik-disabled']: loading }"
             @click="doJump"
         >
-            {{ loading ? '加载中...' : '跳转到Kemono' }}
+            {{ loading ? t('button.loading') : t('button.jump') }}
         </div>
     </div>
 </template>
