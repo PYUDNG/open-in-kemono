@@ -1,4 +1,3 @@
-import { GM_addValueChangeListener } from '$';
 import storage from './storage.js';
 import { Checker, requestJson, getSearchParam } from './utils/main.js';
 
@@ -8,7 +7,7 @@ interface Page {
 };
 
 let domain = storage.get('domain');
-GM_addValueChangeListener('domain', (name, oldValue, newValue, remote) => domain = newValue || 'kemono.cr');
+storage.watch('domain', (_, __, newValue, ___) => domain = newValue as string || 'kemono.cr');
 
 const rules: Record<string, Record<string, Page>> = {
     pixiv: {
