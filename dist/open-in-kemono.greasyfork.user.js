@@ -5,7 +5,7 @@
 // @name:zh-CN         在Kemono中打开
 // @name:zh-TW         在Kemono中打開
 // @namespace          https://greasyfork.org/zh-CN/users/667968-pyudng
-// @version            1.0.0
+// @version            1.1.0
 // @author             PY-DNG
 // @description        Open corresponding kemono page from multiple services
 // @description:en     Open corresponding kemono page from multiple services
@@ -15,6 +15,9 @@
 // @license            GPL-3.0-or-later
 // @icon               https://kemono.cr/assets/favicon-CPB6l7kH.ico
 // @match              http*://*.pixiv.net/*
+// @match              http*://*.fantia.jp/*
+// @match              http*://*.subscribestar.adult/*
+// @match              http*://*.subscribestar.com/*
 // @require            https://cdn.jsdelivr.net/npm/vue@3.5.26/dist/vue.global.prod.js
 // @grant              GM_addStyle
 // @grant              GM_addValueChangeListener
@@ -52,7 +55,7 @@
 
   const d=new Set;const o = async e=>{d.has(e)||(d.add(e),(t=>{typeof GM_addStyle=="function"?GM_addStyle(t):(document.head||document.documentElement).appendChild(document.createElement("style")).append(t);})(e));};
 
-  o(" .oik-jump-button[data-v-729a9529]{border:2px solid var(--color-border);background-color:var(--color-bg);color:var(--color-text);padding:.25em;cursor:pointer}.oik-root{--color-text: #1a1a1a;--color-bg: #ffffff;--color-primary: #2563eb;--color-secondary: #f3f4f6;--color-border: #e5e7eb}html[data-theme=dark] .oik-root{--color-text: #f9fafb;--color-bg: #1f1f1f;--color-primary: #60a5fa;--color-secondary: #1f2937;--color-border: #374151}.oik-root .oik-disabled{filter:grayscale(1) brightness(.8);cursor:not-allowed} ");
+  o(" .oik-jump-button[data-v-723a416e]{border:2px solid var(--color-border);background-color:var(--color-bg);color:var(--color-text);padding:.25em;cursor:pointer}.oik-root{--color-text: #1a1a1a;--color-bg: #ffffff;--color-primary: #2563eb;--color-secondary: #f3f4f6;--color-border: #e5e7eb}html[data-theme=dark] .oik-root{--color-text: #f9fafb;--color-bg: #1f1f1f;--color-primary: #60a5fa;--color-secondary: #1f2937;--color-border: #374151}@media(prefers-color-scheme:dark){html:not([data-theme]) .oik-root{--color-text: #f9fafb;--color-bg: #1f1f1f;--color-primary: #60a5fa;--color-secondary: #1f2937;--color-border: #374151}}.oik-root .oik-disabled{filter:grayscale(1) brightness(.8);cursor:not-allowed} ");
 
   var _GM_addValueChangeListener = (() => typeof GM_addValueChangeListener != "undefined" ? GM_addValueChangeListener : void 0)();
   var _GM_deleteValue = (() => typeof GM_deleteValue != "undefined" ? GM_deleteValue : void 0)();
@@ -66,15 +69,21 @@
     "switch": (val) => !!val,
     "url": (val) => location.href === val,
     "path": (val) => location.pathname === val,
+    "host": (val) => location.host === val,
     "regurl": (val) => !!location.href.match(val),
     "regpath": (val) => !!location.pathname.match(val),
+    "reghost": (val) => !!location.host.match(val),
     "starturl": (val) => location.href.startsWith(val),
     "startpath": (val) => location.pathname.startsWith(val),
+    "endhost": (val) => location.host.endsWith(val),
     "func": (val) => !!val()
   };
-  function testChecker(checker) {
+  function testChecker(checker, mode = "or") {
     if (Array.isArray(checker)) {
-      return checker.some((c) => testChecker(c));
+      if (mode === "and")
+        return checker.every((c) => testChecker(c));
+      else
+        return checker.some((c) => testChecker(c));
     }
     return checkers[checker.type](checker.value);
   }
@@ -4554,20 +4563,28 @@ i18n2[DatetimePartsSymbol](...args)
   const rules = {
     pixiv: {
       users: {
-        checker: {
+        mode: "and",
+        checker: [{
+          type: "endhost",
+          value: "pixiv.net"
+        }, {
           type: "regpath",
           value: /^\/users\/\d+/
-        },
+        }],
         url() {
           const userID = location.pathname.match(/^\/users\/(\d+)/)[1];
           return `https://${domain}/fanbox/user/${userID}`;
         }
       },
       artworks: {
-        checker: {
+        mode: "and",
+        checker: [{
+          type: "endhost",
+          value: "pixiv.net"
+        }, {
           type: "regpath",
           value: /^\/artworks\/\d+/
-        },
+        }],
         async url() {
           const str_id = location.pathname.match(/^\/artworks\/(\d+)/)[1];
           const json = await requestJson({
@@ -4579,10 +4596,14 @@ i18n2[DatetimePartsSymbol](...args)
         }
       },
       novel: {
-        checker: {
+        mode: "and",
+        checker: [{
+          type: "endhost",
+          value: "pixiv.net"
+        }, {
           type: "path",
           value: "/novel/show.php"
-        },
+        }],
         async url() {
           const str_id = getSearchParam("id");
           const json = await requestJson({
@@ -4594,10 +4615,14 @@ i18n2[DatetimePartsSymbol](...args)
         }
       },
       series: {
-        checker: {
+        mode: "and",
+        checker: [{
+          type: "endhost",
+          value: "pixiv.net"
+        }, {
           type: "regpath",
           value: /^\/novel\/series\/\d+$/
-        },
+        }],
         async url() {
           const str_id = location.pathname.match(/^\/novel\/series\/(\d+)$/)[1];
           const json = await requestJson({
@@ -4606,6 +4631,38 @@ i18n2[DatetimePartsSymbol](...args)
           });
           const userID = json.body.userId;
           return `https://${domain}/fanbox/user/${userID}`;
+        }
+      }
+    },
+    fantia: {
+      fanclubs: {
+        mode: "and",
+        checker: [{
+          type: "endhost",
+          value: "fantia.jp"
+        }, {
+          type: "regpath",
+          value: /^\/fanclubs\/\d+\/?/
+        }],
+        url() {
+          const userID = location.pathname.match(/^\/fanclubs\/(\d+)\/?/)[1];
+          return `https://${domain}/fantia/user/${userID}`;
+        }
+      }
+    },
+    subscribestar: {
+      user: {
+        mode: "and",
+        checker: [{
+          type: "reghost",
+          value: /^(www\.)?subscribestar\.(com|adult)/
+        }, {
+          type: "func",
+          value: () => location.pathname.length > 1
+        }],
+        url() {
+          const userID = location.pathname.substring(1).split("/", 1)[0];
+          return `https://${domain}/subscribestar/user/${userID}`;
         }
       }
     }
@@ -4617,7 +4674,7 @@ i18n2[DatetimePartsSymbol](...args)
       const { t: t2 } = useI18n();
       const isSupportedPage = Vue.ref(false);
       const calcIsSupportedPage = () => isSupportedPage.value = Object.values(rules).some(
-        (website) => Object.values(website).some((page) => testChecker(page.checker))
+        (website) => Object.values(website).some((page) => testChecker(page.checker, page.mode ?? "or"))
       );
       calcIsSupportedPage();
       const urlMonitor = new URLChangeMonitor();
@@ -4628,7 +4685,7 @@ i18n2[DatetimePartsSymbol](...args)
         if (loading.value) return;
         for (const website of Object.values(rules)) {
           for (const page of Object.values(website)) {
-            if (testChecker(page.checker)) {
+            if (testChecker(page.checker, page.mode ?? "or")) {
               loading.value = true;
               const url = await Promise.resolve(page.url());
               if (storage.get("newtab")) {
@@ -4665,7 +4722,7 @@ i18n2[DatetimePartsSymbol](...args)
     }
     return target;
   };
-  const App = _export_sfc(_sfc_main, [["__scopeId", "data-v-729a9529"]]);
+  const App = _export_sfc(_sfc_main, [["__scopeId", "data-v-723a416e"]]);
   const t = i18n.global.t;
   Vue.createApp(App).use(i18n).mount(
     (() => {
