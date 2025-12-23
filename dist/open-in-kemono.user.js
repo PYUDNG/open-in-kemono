@@ -1,24 +1,31 @@
 // ==UserScript==
-// @name        Open in Kemono
-// @name:en     Open in Kemono
-// @name:zh     在Kemono中打開
-// @name:zh-CN  在Kemono中打开
-// @namespace   https://greasyfork.org/zh-CN/users/667968-pyudng
-// @version     1.0.0
-// @author      PY-DNG
-// @icon        https://kemono.cr/assets/favicon-CPB6l7kH.ico
-// @match       http*://*.pixiv.net/*
-// @require     https://cdn.jsdelivr.net/npm/vue@3.5.26/dist/vue.global.prod.js
-// @grant       GM_addStyle
-// @grant       GM_addValueChangeListener
-// @grant       GM_deleteValue
-// @grant       GM_getValue
-// @grant       GM_listValues
-// @grant       GM_openInTab
-// @grant       GM_registerMenuCommand
-// @grant       GM_setValue
-// @grant       GM_xmlhttpRequest
-// @run-at      document-start
+// @name               Open in Kemono
+// @name:en            Open in Kemono
+// @name:zh            在Kemono中打開
+// @name:zh-CN         在Kemono中打开
+// @name:zh-TW         在Kemono中打開
+// @namespace          https://greasyfork.org/zh-CN/users/667968-pyudng
+// @version            1.0.0
+// @author             PY-DNG
+// @description        Open corresponding kemono page from multiple services
+// @description:en     Open corresponding kemono page from multiple services
+// @description:zh     从多个资源平台网站打开Kemono中的对应页面
+// @description:zh-CN  从多个资源平台网站打开Kemono中的对应页面
+// @description:zh-TW  從多個資源平臺網站打開Kemono中的對應頁面
+// @license            GNU General Public License v3 (GPL-3)
+// @icon               https://kemono.cr/assets/favicon-CPB6l7kH.ico
+// @match              http*://*.pixiv.net/*
+// @require            https://cdn.jsdelivr.net/npm/vue@3.5.26/dist/vue.global.prod.js
+// @grant              GM_addStyle
+// @grant              GM_addValueChangeListener
+// @grant              GM_deleteValue
+// @grant              GM_getValue
+// @grant              GM_listValues
+// @grant              GM_openInTab
+// @grant              GM_registerMenuCommand
+// @grant              GM_setValue
+// @grant              GM_xmlhttpRequest
+// @run-at             document-start
 // ==/UserScript==
 
 (function (ot) {

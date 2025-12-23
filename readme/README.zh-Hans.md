@@ -3,16 +3,22 @@
 
 这是一个[用户脚本](https://greasyfork.org/help/installing-user-scripts)，可让你从[多个服务](#支持的服务)跳转到对应的 [kemono](https://kemono.cr/) 页面
 
+本项目发布于
+- [Github](https://github.com/PYUDNG/open-in-kemono)
+- [Greasyfork](https://greasyfork.org/scripts/559907)
+
 ## 安装
-> **提示：安装方法**
+> **提示：安装方法**  
 > 如果你不熟悉用户脚本，请先阅读[如何安装用户脚本](https://greasyfork.org/help/installing-user-scripts)
 
 你可以选择以下任一方式安装：
 - [从 Github 安装](../../raw/refs/heads/main/dist/open-in-kemono.user.js)
-- 从 Greasyfork 安装（暂未上线）
+  包含代码压缩，脚本文件体积更小
+- [从 Greasyfork 安装](https://greasyfork.org/zh-CN/scripts/559907-open-in-kemono)
+  无代码压缩，符合Greasyfork代码准则
 
 ## 支持的服务
-> **提示：功能需求提交**
+> **提示：功能需求提交**  
 > 本脚本仍在持续开发中，你可以通过[提交新issue](https://github.com/PYUDNG/open-in-kemono/issues)来申请新增支持的服务或页面
 
 | 服务 | 页面 | 支持状态 |

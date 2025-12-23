@@ -3,13 +3,17 @@
 
 This is a [Userscript](https://greasyfork.org/help/installing-user-scripts) that allows you to open corresponding [kemono](https://kemono.cr/) page from [multiple services](#supported-services)
 
+You can find this project on
+- [Github](https://github.com/PYUDNG/open-in-kemono)
+- [Greasyfork](https://greasyfork.org/scripts/559907)
+
 ## Installation
 > **Tip: how to install**  
 > If you're not familiar with userscripts, please read [How to install userscripts](https://greasyfork.org/help/installing-user-scripts) first
 
 You can choose one of the following to install:
 - [Install from Github](../../raw/refs/heads/main/dist/open-in-kemono.user.js)
-- Install from Greasyfork (not available yet)
+- [Install from Greasyfork](https://greasyfork.org/zh-CN/scripts/559907-open-in-kemono)
 
 ## Supported services
 > **Tip: feature request**  
