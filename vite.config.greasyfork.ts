@@ -10,6 +10,12 @@ export default defineConfig({
     monkey({
       entry: 'src/main.ts',
       userscript: {
+        name: {
+            '': 'Open in Kemono',
+            'en': 'Open in Kemono',
+            'zh': '在Kemono中打開',
+            'zh-CN': '在Kemono中打开',
+        },
         version: '1.0.0',
         author: 'PY-DNG',
         icon: 'https://kemono.cr/assets/favicon-CPB6l7kH.ico',
