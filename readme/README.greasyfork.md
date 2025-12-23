@@ -1,15 +1,6 @@
 # Open in Kemono
-[English](#) [简体中文](./readme/README.zh-Hans.md) [繁體中文](./readme/README.zh-Hant.md)
 
 This is a [Userscript](https://greasyfork.org/help/installing-user-scripts) that allows you to open corresponding [kemono](https://kemono.cr/) page from [multiple services](#supported-services)
-
-## Installation
-> **Tip: how to install**  
-> If you're not familiar with userscripts, please read [How to install userscripts](https://greasyfork.org/help/installing-user-scripts) first
-
-You can choose one of the following to install:
-- [Install from Github](../../raw/refs/heads/main/dist/open-in-kemono.user.js)
-- Install from Greasyfork (not available yet)
 
 ## Supported services
 > **Tip: feature request**  
