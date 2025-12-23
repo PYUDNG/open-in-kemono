@@ -26,7 +26,7 @@ export default defineConfig({
         },
         version: '1.0.0',
         author: 'PY-DNG',
-        license: 'GNU General Public License v3 (GPL-3)',
+        license: 'GPL-3.0-or-later',
         icon: 'https://kemono.cr/assets/favicon-CPB6l7kH.ico',
         namespace: 'https://greasyfork.org/zh-CN/users/667968-pyudng',
         match: [

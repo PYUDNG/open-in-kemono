@@ -12,7 +12,7 @@
 // @description:zh     从多个资源平台网站打开Kemono中的对应页面
 // @description:zh-CN  从多个资源平台网站打开Kemono中的对应页面
 // @description:zh-TW  從多個資源平臺網站打開Kemono中的對應頁面
-// @license            GNU General Public License v3 (GPL-3)
+// @license            GPL-3.0-or-later
 // @icon               https://kemono.cr/assets/favicon-CPB6l7kH.ico
 // @match              http*://*.pixiv.net/*
 // @require            https://cdn.jsdelivr.net/npm/vue@3.5.26/dist/vue.global.prod.js
