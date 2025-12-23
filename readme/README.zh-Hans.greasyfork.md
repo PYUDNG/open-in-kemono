@@ -15,3 +15,5 @@
 | Pixiv | `/users/123456` | ✔ |
 | Pixiv | `/novel/show.php?id=123456` | ✔ |
 | Pixiv | `/novel/series/123456` | ✔ |
+| Fantia | `/fanclubs/123456` | ✔ |
+| SubscribeStar | `/creator-id` | ✔ |

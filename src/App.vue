@@ -13,7 +13,7 @@
     const isSupportedPage = ref(false);
     const calcIsSupportedPage = () => 
         isSupportedPage.value = Object.values(rules).some(website => 
-            Object.values(website).some(page => testChecker(page.checker))
+            Object.values(website).some(page => testChecker(page.checker, page.mode ?? 'or'))
         );
     calcIsSupportedPage();
 
@@ -34,7 +34,7 @@
 
         for (const website of Object.values(rules)) {
             for (const page of Object.values(website)) {
-                if (testChecker(page.checker)) {
+                if (testChecker(page.checker, page.mode ?? 'or')) {
                     loading.value = true;
                     const url = await Promise.resolve(page.url());
                     if (storage.get('newtab')) {
@@ -94,6 +94,17 @@
         --color-primary: #60a5fa;   /* 主色调（提亮适配深色） */
         --color-secondary: #1f2937; /* 辅助色 */
         --color-border: #374151;    /* 边框色 */
+    }
+
+    /* 当没有显式设置深浅色时，跟随系统设置 */
+    @media (prefers-color-scheme: dark) {
+        html:not([data-theme]) .oik-root {
+            --color-text: #f9fafb;      /* 浅色文本 */
+            --color-bg: #1f1f1f;        /* 深色背景 */
+            --color-primary: #60a5fa;   /* 主色调（提亮适配深色） */
+            --color-secondary: #1f2937; /* 辅助色 */
+            --color-border: #374151;    /* 边框色 */
+        }
     }
 
     .oik-root .oik-disabled {
