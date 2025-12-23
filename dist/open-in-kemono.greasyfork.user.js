@@ -5,7 +5,7 @@
 // @name:zh-CN         在Kemono中打开
 // @name:zh-TW         在Kemono中打開
 // @namespace          https://greasyfork.org/zh-CN/users/667968-pyudng
-// @version            1.1.0
+// @version            1.2.0
 // @author             PY-DNG
 // @description        Open corresponding kemono page from multiple services
 // @description:en     Open corresponding kemono page from multiple services
@@ -18,6 +18,7 @@
 // @match              http*://*.fantia.jp/*
 // @match              http*://*.subscribestar.adult/*
 // @match              http*://*.subscribestar.com/*
+// @match              http*://*.dlsite.com/*
 // @require            https://cdn.jsdelivr.net/npm/vue@3.5.26/dist/vue.global.prod.js
 // @grant              GM_addStyle
 // @grant              GM_addValueChangeListener
@@ -4663,6 +4664,22 @@ i18n2[DatetimePartsSymbol](...args)
         url() {
           const userID = location.pathname.substring(1).split("/", 1)[0];
           return `https://${domain}/subscribestar/user/${userID}`;
+        }
+      }
+    },
+    dlsite: {
+      makerid: {
+        mode: "and",
+        checker: [{
+          type: "endhost",
+          value: "dlsite.com"
+        }, {
+          type: "regpath",
+          value: /^\/home\/circle\/profile\/=\/maker_id\/RG\d+(\.html)?(\/|$)/
+        }],
+        url() {
+          const userID = location.pathname.match(/^\/home\/circle\/profile\/=\/maker_id\/(RG\d+)(\.html)?(\/|$)/)[1];
+          return `https://${domain}/dlsite/user/${userID}`;
         }
       }
     }

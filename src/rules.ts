@@ -130,6 +130,22 @@ const rules: Record<string, Record<string, Page>> = {
             }
         }
     },
+    dlsite: {
+        makerid: {
+            mode: 'and',
+            checker: [{
+                type: 'endhost',
+                value: 'dlsite.com'
+            }, {
+                type: 'regpath',
+                value: /^\/home\/circle\/profile\/=\/maker_id\/RG\d+(\.html)?(\/|$)/
+            }],
+            url() {
+                const userID = location.pathname.match(/^\/home\/circle\/profile\/=\/maker_id\/(RG\d+)(\.html)?(\/|$)/)![1];
+                return `https://${ domain }/dlsite/user/${ userID }`;
+            }
+        }
+    },
 };
 
 export default rules;

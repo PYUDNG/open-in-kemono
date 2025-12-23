@@ -29,3 +29,4 @@
 | Pixiv | `/novel/series/123456` | ✔ |
 | Fantia | `/fanclubs/123456` | ✔ |
 | SubscribeStar | `/creator-id` | ✔ |
+| DLSite | `/home/circle/profile/=/maker_id/RG123456` | ✔ |
