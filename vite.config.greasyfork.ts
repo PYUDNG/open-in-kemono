@@ -24,7 +24,7 @@ export default defineConfig({
         mountGmApi: true,
       },
       build: {
-        fileName: pkg.name + '.user.js',
+        fileName: pkg.name + '.greasyfork.user.js',
         externalGlobals: {
           vue: cdn.jsdelivr('Vue', 'dist/vue.global.prod.js'),
         },
@@ -32,7 +32,7 @@ export default defineConfig({
     }),
   ],
   build: {
-    minify: true,
+    minify: false,
     emptyOutDir: false,
   },
 });

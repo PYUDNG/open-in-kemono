@@ -19,3 +19,4 @@ You can choose one of the following to install:
 | Pixiv | `/artworks/123456` | ✔ |
 | Pixiv | `/users/123456` | ✔ |
 | Pixiv | `/novel/show.php?id=123456` | ✔ |
+| Pixiv | `/novel/series/123456` | ✔ |
