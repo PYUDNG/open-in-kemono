@@ -5,7 +5,7 @@
 // @name:zh-CN         在Kemono中打开
 // @name:zh-TW         在Kemono中打開
 // @namespace          https://greasyfork.org/zh-CN/users/667968-pyudng
-// @version            1.4.0
+// @version            1.4.1
 // @author             PY-DNG
 // @description        Open corresponding kemono page from multiple services
 // @description:en     Open corresponding kemono page from multiple services
@@ -4837,7 +4837,7 @@ i18n2[DatetimePartsSymbol](...args)
   Vue.createApp(JumpButton).use(i18n).mount(
     (() => {
       const app = document.createElement("div");
-      app.style.cssText = "position: fixed; right: 0; bottom: 0; padding: 0; margin: 0; border: 0; z-index: 1000;";
+      app.style.cssText = "position: fixed; right: 0; bottom: 0; padding: 0; margin: 0; border: 0; z-index: 10000;";
       detectDom("body").then((body) => body.append(app));
       return app;
     })()

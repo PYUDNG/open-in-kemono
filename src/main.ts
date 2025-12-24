@@ -10,7 +10,7 @@ const t = i18n.global.t;
 createApp(JumpButton).use(i18n).mount(
     (() => {
         const app = document.createElement('div');
-        app.style.cssText = 'position: fixed; right: 0; bottom: 0; padding: 0; margin: 0; border: 0; z-index: 1000;';
+        app.style.cssText = 'position: fixed; right: 0; bottom: 0; padding: 0; margin: 0; border: 0; z-index: 10000;';
         detectDom('body').then(body => body.append(app));
         return app;
     }) (),
