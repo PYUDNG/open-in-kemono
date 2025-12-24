@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import monkey, { cdn } from 'vite-plugin-monkey';
 import { default as pkg } from './package.json';
+import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -24,7 +25,7 @@ export default defineConfig({
             'zh-CN': '从多个资源平台网站打开Kemono中的对应页面',
             'zh-TW': '從多個資源平臺網站打開Kemono中的對應頁面',
         },
-        version: '1.2.0',
+        version: pkg.version,
         author: 'PY-DNG',
         license: 'GPL-3.0-or-later',
         icon: 'https://kemono.cr/assets/favicon-CPB6l7kH.ico',
@@ -50,6 +51,11 @@ export default defineConfig({
       },
     }),
   ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   build: {
     minify: true,
     emptyOutDir: false,

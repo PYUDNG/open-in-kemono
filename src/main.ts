@@ -2,12 +2,12 @@ import { GM_registerMenuCommand } from '$';
 import { detectDom } from './utils/main.js';
 import { createApp } from 'vue';
 import i18n from './i18n/main.js';
-import App from './App.vue';
+import JumpButton from './ui/JumpButton/App.vue';
 import storage from './storage.js';
 
 const t = i18n.global.t;
 
-createApp(App).use(i18n).mount(
+createApp(JumpButton).use(i18n).mount(
     (() => {
         const app = document.createElement('div');
         app.style.cssText = 'position: fixed; right: 0; bottom: 0; padding: 0; margin: 0; border: 0; z-index: 1000;';

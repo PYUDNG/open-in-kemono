@@ -1,10 +1,10 @@
 <script setup lang="ts">
     import { useI18n } from 'vue-i18n';
     import { ref } from 'vue';
-    import { testChecker, URLChangeMonitor } from './utils/main.js';
-    import rules from './rules.js';
+    import { testChecker, URLChangeMonitor } from '@/utils/main.js';
+    import rules from '@/rules.js';
     import { GM_openInTab } from '$';
-    import storage from './storage.js';
+    import storage from '@/storage.js';
 
     // Vue i18n
     const { t } = useI18n();

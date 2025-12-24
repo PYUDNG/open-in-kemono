@@ -1,7 +1,7 @@
 {
   "name": "open-in-kemono",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,6 +14,7 @@
     "vue-i18n": "^11.2.7"
   },
   "devDependencies": {
+    "@types/node": "^25.0.3",
     "@vitejs/plugin-vue": "^6.0.1",
     "typescript": "^5.9.2",
     "vite": "^7.1.3",
