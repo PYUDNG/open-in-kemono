@@ -1,31 +1,10 @@
-import storage from './storage.js';
-import { Checker, requestJson, getSearchParam } from './utils/main.js';
+import { getSearchParam, requestJson } from '@/utils/main.js';
+import { domain } from '../helpers.js';
+import { defineWebsite } from '../types.js'
+import { ref } from 'vue';
 
-interface Page {
-    /**
-     * checker的多条件联立关系，'and'表示所有条件均需通过才算通过，'or'表示任意条件通过即算通过  
-     * @default 'or'
-     */
-    mode?: 'and' | 'or';
-
-    /**
-     * 页面匹配条件
-     */
-    checker: Checker | Checker[];
-
-    /**
-     * 从该页面获取跳转目标url的方法
-     * @param args 任意参数
-     * @returns 跳转目标url，应基于用户设置的domain（kemono域名）
-     */
-    url: (...args: any[]) => string | Promise<string>;
-};
-
-let domain = storage.get('domain');
-storage.watch('domain', (_, __, newValue, ___) => domain = newValue as string || 'kemono.cr');
-
-const rules: Record<string, Record<string, Page>> = {
-    pixiv: {
+export const pixiv = defineWebsite({
+    pages: {
         users: {
             mode: 'and',
             checker: [{
@@ -98,54 +77,25 @@ const rules: Record<string, Record<string, Page>> = {
             }
         },
     },
-    fantia: {
-        fanclubs: {
-            mode: 'and',
-            checker: [{
-                type: 'endhost',
-                value: 'fantia.jp',
-            }, {
-                type: 'regpath',
-                value: /^\/fanclubs\/\d+\/?/,
-            }],
-            url() {
-                const userID = location.pathname.match(/^\/fanclubs\/(\d+)\/?/)![1];
-                return `https://${ domain }/fantia/user/${ userID }`;
-            },
-        },
-    },
-    subscribestar: {
-        user: {
-            mode: 'and',
-            checker: [{
-                type: 'reghost',
-                value: /^(www\.)?subscribestar\.(com|adult)/
-            }, {
-                type: 'func',
-                value: () => location.pathname.length > 1
-            }],
-            url() {
-                const userID = location.pathname.substring(1).split('/', 1)[0];
-                return `https://${ domain }/subscribestar/user/${ userID }`;
-            }
+    dark: ref(false),
+    enter() {
+        const html = document.querySelector('html')!;
+        const updateDark = () => {
+            this.dark.value = Object.hasOwn(html.dataset, 'theme') ?
+                html.dataset.theme === 'dark' : false;
         }
+        const observer = this.context!.observer = new MutationObserver(updateDark);
+        observer.observe(html, {
+            attributes: true,
+            attributeFilter: ['data-theme'],
+        });
+        updateDark();
     },
-    dlsite: {
-        makerid: {
-            mode: 'and',
-            checker: [{
-                type: 'endhost',
-                value: 'dlsite.com'
-            }, {
-                type: 'regpath',
-                value: /^\/home\/circle\/profile\/=\/maker_id\/RG\d+(\.html)?(\/|$)/
-            }],
-            url() {
-                const userID = location.pathname.match(/^\/home\/circle\/profile\/=\/maker_id\/(RG\d+)(\.html)?(\/|$)/)![1];
-                return `https://${ domain }/dlsite/user/${ userID }`;
-            }
-        }
+    leave() {
+        this.context!.observer?.disconnect();
+        this.context!.observer = null;
     },
-};
-
-export default rules;
+    context: {
+        observer: null as (MutationObserver | null),
+    },
+});

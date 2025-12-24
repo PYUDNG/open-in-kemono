@@ -5,7 +5,7 @@
 // @name:zh-CN         在Kemono中打开
 // @name:zh-TW         在Kemono中打開
 // @namespace          https://greasyfork.org/zh-CN/users/667968-pyudng
-// @version            1.2.0
+// @version            1.3.0
 // @author             PY-DNG
 // @description        Open corresponding kemono page from multiple services
 // @description:en     Open corresponding kemono page from multiple services
@@ -56,7 +56,7 @@
 
   const d=new Set;const o = async e=>{d.has(e)||(d.add(e),(t=>{typeof GM_addStyle=="function"?GM_addStyle(t):(document.head||document.documentElement).appendChild(document.createElement("style")).append(t);})(e));};
 
-  o(" .oik-jump-button[data-v-70584514]{border:2px solid var(--color-border);background-color:var(--color-bg);color:var(--color-text);padding:.25em;cursor:pointer}.oik-root{--color-text: #1a1a1a;--color-bg: #ffffff;--color-primary: #2563eb;--color-secondary: #f3f4f6;--color-border: #e5e7eb}html[data-theme=dark] .oik-root{--color-text: #f9fafb;--color-bg: #1f1f1f;--color-primary: #60a5fa;--color-secondary: #1f2937;--color-border: #374151}@media(prefers-color-scheme:dark){html:not([data-theme]) .oik-root{--color-text: #f9fafb;--color-bg: #1f1f1f;--color-primary: #60a5fa;--color-secondary: #1f2937;--color-border: #374151}}.oik-root .oik-disabled{filter:grayscale(1) brightness(.8);cursor:not-allowed} ");
+  o(" .oik-jump-button[data-v-417531d5]{border:2px solid var(--color-border);background-color:var(--color-bg);color:var(--color-text);padding:.25em;cursor:pointer}.oik-root{--color-text: #1a1a1a;--color-bg: #ffffff;--color-primary: #2563eb;--color-secondary: #f3f4f6;--color-border: #e5e7eb}.oik-root.oik-dark{--color-text: #f9fafb;--color-bg: #1f1f1f;--color-primary: #60a5fa;--color-secondary: #1f2937;--color-border: #374151}.oik-root .oik-disabled{filter:grayscale(1) brightness(.8);cursor:not-allowed} ");
 
   var _GM_addValueChangeListener = (() => typeof GM_addValueChangeListener != "undefined" ? GM_addValueChangeListener : void 0)();
   var _GM_deleteValue = (() => typeof GM_deleteValue != "undefined" ? GM_deleteValue : void 0)();
@@ -4561,8 +4561,16 @@ i18n2[DatetimePartsSymbol](...args)
   );
   let domain = storage.get("domain");
   storage.watch("domain", (_, __, newValue, ___) => domain = newValue || "kemono.cr");
-  const rules = {
-    pixiv: {
+  const systemDark = (function() {
+    const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    darkModeQuery.addEventListener("change", (e) => systemDark.value = e.matches);
+    return Vue.ref(darkModeQuery.matches);
+  })();
+  function defineWebsite(website2) {
+    return website2;
+  }
+  const pixiv = defineWebsite({
+    pages: {
       users: {
         mode: "and",
         checker: [{
@@ -4635,7 +4643,29 @@ i18n2[DatetimePartsSymbol](...args)
         }
       }
     },
-    fantia: {
+    dark: Vue.ref(false),
+    enter() {
+      const html = document.querySelector("html");
+      const updateDark = () => {
+        this.dark.value = Object.hasOwn(html.dataset, "theme") ? html.dataset.theme === "dark" : false;
+      };
+      const observer = this.context.observer = new MutationObserver(updateDark);
+      observer.observe(html, {
+        attributes: true,
+        attributeFilter: ["data-theme"]
+      });
+      updateDark();
+    },
+    leave() {
+      this.context.observer?.disconnect();
+      this.context.observer = null;
+    },
+    context: {
+      observer: null
+    }
+  });
+  const fantia = defineWebsite({
+    pages: {
       fanclubs: {
         mode: "and",
         checker: [{
@@ -4651,7 +4681,10 @@ i18n2[DatetimePartsSymbol](...args)
         }
       }
     },
-    subscribestar: {
+    dark: Vue.ref(false)
+  });
+  const subscribestar = defineWebsite({
+    pages: {
       user: {
         mode: "and",
         checker: [{
@@ -4667,7 +4700,29 @@ i18n2[DatetimePartsSymbol](...args)
         }
       }
     },
-    dlsite: {
+    dark: Vue.ref(systemDark.value),
+    enter() {
+      const html = document.querySelector("html");
+      const updateDark = () => {
+        this.dark.value = Object.hasOwn(html.dataset, "theme") ? html.dataset.theme === "dark" : systemDark.value;
+      };
+      const observer = this.context.observer = new MutationObserver(updateDark);
+      observer.observe(html, {
+        attributes: true,
+        attributeFilter: ["data-theme"]
+      });
+      updateDark();
+    },
+    leave() {
+      this.context.observer?.disconnect();
+      this.context.observer = null;
+    },
+    context: {
+      observer: null
+    }
+  });
+  const dlsite = defineWebsite({
+    pages: {
       makerid: {
         mode: "and",
         checker: [{
@@ -4682,53 +4737,80 @@ i18n2[DatetimePartsSymbol](...args)
           return `https://${domain}/dlsite/user/${userID}`;
         }
       }
+    },
+    dark: Vue.ref(false)
+  });
+  const rules = Object.freeze( Object.defineProperty({
+    __proto__: null,
+    dlsite,
+    fantia,
+    pixiv,
+    subscribestar
+  }, Symbol.toStringTag, { value: "Module" }));
+  const locate = () => {
+    for (const website2 of Object.values(rules)) {
+      for (const page2 of Object.values(website2.pages)) {
+        if (testChecker(page2.checker, page2.mode)) {
+          return { website: website2, page: page2 };
+        }
+      }
     }
+    return { website: null, page: null };
   };
-  const _hoisted_1 = { class: "oik-root" };
+  const location$1 = locate();
+  const website = Vue.ref(location$1.website);
+  const page = Vue.ref(location$1.page);
+  const urlMonitor = new URLChangeMonitor();
+  urlMonitor.init();
+  urlMonitor.onUrlChange(() => {
+    const location2 = locate();
+    website.value = location2.website;
+    page.value = location2.page;
+  });
+  Vue.watch(website, (newWebsite, oldWebsite) => {
+    Vue.toRaw(oldWebsite)?.leave?.();
+    Vue.toRaw(newWebsite)?.enter?.();
+  }, {
+    immediate: true
+  });
+  Vue.watch(page, (newPage, oldPage) => {
+    Vue.toRaw(oldPage)?.leave?.();
+    Vue.toRaw(newPage)?.enter?.();
+  }, {
+    immediate: true
+  });
   const _sfc_main = Vue.defineComponent({
     __name: "App",
     setup(__props) {
       const { t: t2 } = useI18n();
-      const isSupportedPage = Vue.ref(false);
-      const calcIsSupportedPage = () => isSupportedPage.value = Object.values(rules).some(
-        (website) => Object.values(website).some((page) => testChecker(page.checker, page.mode ?? "or"))
-      );
-      calcIsSupportedPage();
-      const urlMonitor = new URLChangeMonitor();
-      urlMonitor.init();
-      urlMonitor.onUrlChange(() => calcIsSupportedPage());
       const loading = Vue.ref(false);
       async function doJump() {
         if (loading.value) return;
-        for (const website of Object.values(rules)) {
-          for (const page of Object.values(website)) {
-            if (testChecker(page.checker, page.mode ?? "or")) {
-              loading.value = true;
-              const url = await Promise.resolve(page.url());
-              if (storage.get("newtab")) {
-                _GM_openInTab(url, {
-                  active: true,
-                  insert: true,
-                  setParent: true
-                });
-              } else {
-                location.assign(url);
-              }
-              loading.value = false;
-              return;
-            }
-          }
+        if (!website.value || !page.value) return;
+        loading.value = true;
+        const url = await Promise.resolve(page.value.url());
+        if (storage.get("newtab")) {
+          _GM_openInTab(url, {
+            active: true,
+            insert: true,
+            setParent: true
+          });
+        } else {
+          location.assign(url);
         }
+        loading.value = false;
       }
       return (_ctx, _cache) => {
-        return Vue.openBlock(), Vue.createElementBlock("div", _hoisted_1, [
+        return Vue.openBlock(), Vue.createElementBlock("div", {
+          class: Vue.normalizeClass(["oik-root", { "oik-dark": Vue.unref(page)?.dark ?? Vue.unref(website)?.dark ?? false }])
+        }, [
           Vue.withDirectives(Vue.createElementVNode("div", {
             class: Vue.normalizeClass(["oik-jump-button", { ["oik-disabled"]: loading.value }]),
             onClick: doJump
           }, Vue.toDisplayString(loading.value ? Vue.unref(t2)("button.loading") : Vue.unref(t2)("button.jump")), 3), [
-            [Vue.vShow, isSupportedPage.value]
+            [Vue.vShow, Vue.unref(page)]
           ])
-        ]);
+        ], 2);
       };
     }
   });
@@ -4739,9 +4821,9 @@ i18n2[DatetimePartsSymbol](...args)
     }
     return target;
   };
-  const App = _export_sfc(_sfc_main, [["__scopeId", "data-v-70584514"]]);
+  const JumpButton = _export_sfc(_sfc_main, [["__scopeId", "data-v-417531d5"]]);
   const t = i18n.global.t;
-  Vue.createApp(App).use(i18n).mount(
+  Vue.createApp(JumpButton).use(i18n).mount(
     (() => {
       const app = document.createElement("div");
       app.style.cssText = "position: fixed; right: 0; bottom: 0; padding: 0; margin: 0; border: 0; z-index: 1000;";
