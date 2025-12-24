@@ -3,16 +3,17 @@ import { defineWebsite } from '../types.js'
 import { ref } from 'vue';
 
 export const subscribestar = defineWebsite({
+    checker: {
+        type: 'reghost',
+        value: /^(www\.)?subscribestar\.(com|adult)/
+    },
     pages: {
         user: {
             mode: 'and',
-            checker: [{
-                type: 'reghost',
-                value: /^(www\.)?subscribestar\.(com|adult)/
-            }, {
+            checker: {
                 type: 'func',
                 value: () => location.pathname.length > 1
-            }],
+            },
             url() {
                 const userID = location.pathname.substring(1).split('/', 1)[0];
                 return `https://${ domain }/subscribestar/user/${ userID }`;

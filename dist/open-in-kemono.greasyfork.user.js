@@ -5,7 +5,7 @@
 // @name:zh-CN         在Kemono中打开
 // @name:zh-TW         在Kemono中打開
 // @namespace          https://greasyfork.org/zh-CN/users/667968-pyudng
-// @version            1.3.0
+// @version            1.4.0
 // @author             PY-DNG
 // @description        Open corresponding kemono page from multiple services
 // @description:en     Open corresponding kemono page from multiple services
@@ -4570,30 +4570,26 @@ i18n2[DatetimePartsSymbol](...args)
     return website2;
   }
   const pixiv = defineWebsite({
+    checker: {
+      type: "endhost",
+      value: "pixiv.net"
+    },
     pages: {
       users: {
-        mode: "and",
-        checker: [{
-          type: "endhost",
-          value: "pixiv.net"
-        }, {
+        checker: {
           type: "regpath",
           value: /^\/users\/\d+/
-        }],
+        },
         url() {
           const userID = location.pathname.match(/^\/users\/(\d+)/)[1];
           return `https://${domain}/fanbox/user/${userID}`;
         }
       },
       artworks: {
-        mode: "and",
-        checker: [{
-          type: "endhost",
-          value: "pixiv.net"
-        }, {
+        checker: {
           type: "regpath",
           value: /^\/artworks\/\d+/
-        }],
+        },
         async url() {
           const str_id = location.pathname.match(/^\/artworks\/(\d+)/)[1];
           const json = await requestJson({
@@ -4605,14 +4601,10 @@ i18n2[DatetimePartsSymbol](...args)
         }
       },
       novel: {
-        mode: "and",
-        checker: [{
-          type: "endhost",
-          value: "pixiv.net"
-        }, {
+        checker: {
           type: "path",
           value: "/novel/show.php"
-        }],
+        },
         async url() {
           const str_id = getSearchParam("id");
           const json = await requestJson({
@@ -4624,14 +4616,10 @@ i18n2[DatetimePartsSymbol](...args)
         }
       },
       series: {
-        mode: "and",
-        checker: [{
-          type: "endhost",
-          value: "pixiv.net"
-        }, {
+        checker: {
           type: "regpath",
           value: /^\/novel\/series\/\d+$/
-        }],
+        },
         async url() {
           const str_id = location.pathname.match(/^\/novel\/series\/(\d+)$/)[1];
           const json = await requestJson({
@@ -4665,35 +4653,57 @@ i18n2[DatetimePartsSymbol](...args)
     }
   });
   const fantia = defineWebsite({
+    checker: {
+      type: "endhost",
+      value: "fantia.jp"
+    },
     pages: {
       fanclubs: {
-        mode: "and",
-        checker: [{
-          type: "endhost",
-          value: "fantia.jp"
-        }, {
+        checker: {
           type: "regpath",
           value: /^\/fanclubs\/\d+\/?/
-        }],
+        },
         url() {
           const userID = location.pathname.match(/^\/fanclubs\/(\d+)\/?/)[1];
           return `https://${domain}/fantia/user/${userID}`;
+        }
+      },
+      posts: {
+        checker: {
+          type: "regpath",
+          value: /^\/posts\/\d+\/?/
+        },
+        async url() {
+          const postID = location.pathname.match(/^\/posts\/(\d+)\/?/)[1];
+          const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+          const data = await requestJson({
+            method: "GET",
+            url: `https://fantia.jp/api/v1/posts/${postID}`,
+            headers: {
+              referer: location.href,
+              "x-csrf-token": csrfToken,
+              "x-requested-with": "XMLHttpRequest"
+            }
+          });
+          const userID = data.post.fanclub.id;
+          return `https://${domain}/fantia/user/${userID}/post/${postID}`;
         }
       }
     },
     dark: Vue.ref(false)
   });
   const subscribestar = defineWebsite({
+    checker: {
+      type: "reghost",
+      value: /^(www\.)?subscribestar\.(com|adult)/
+    },
     pages: {
       user: {
         mode: "and",
-        checker: [{
-          type: "reghost",
-          value: /^(www\.)?subscribestar\.(com|adult)/
-        }, {
+        checker: {
           type: "func",
           value: () => location.pathname.length > 1
-        }],
+        },
         url() {
           const userID = location.pathname.substring(1).split("/", 1)[0];
           return `https://${domain}/subscribestar/user/${userID}`;
@@ -4722,16 +4732,16 @@ i18n2[DatetimePartsSymbol](...args)
     }
   });
   const dlsite = defineWebsite({
+    checker: {
+      type: "endhost",
+      value: "dlsite.com"
+    },
     pages: {
       makerid: {
-        mode: "and",
-        checker: [{
-          type: "endhost",
-          value: "dlsite.com"
-        }, {
+        checker: {
           type: "regpath",
           value: /^\/home\/circle\/profile\/=\/maker_id\/RG\d+(\.html)?(\/|$)/
-        }],
+        },
         url() {
           const userID = location.pathname.match(/^\/home\/circle\/profile\/=\/maker_id\/(RG\d+)(\.html)?(\/|$)/)[1];
           return `https://${domain}/dlsite/user/${userID}`;
@@ -4749,8 +4759,9 @@ i18n2[DatetimePartsSymbol](...args)
   }, Symbol.toStringTag, { value: "Module" }));
   const locate = () => {
     for (const website2 of Object.values(rules)) {
+      if (website2.checker && !testChecker(website2.checker, website2.mode ?? "or")) continue;
       for (const page2 of Object.values(website2.pages)) {
-        if (testChecker(page2.checker, page2.mode)) {
+        if (testChecker(page2.checker, page2.mode ?? "or")) {
           return { website: website2, page: page2 };
         }
       }

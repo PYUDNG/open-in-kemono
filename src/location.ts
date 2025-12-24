@@ -5,8 +5,9 @@ import { testChecker, URLChangeMonitor } from './utils/main.js';
 // 根据rules获取当前所处的网站和页面
 const locate = () => {
     for (const website of Object.values(rules)) {
+        if (website.checker && !testChecker(website.checker, website.mode ?? 'or')) continue;
         for (const page of Object.values(website.pages)) {
-            if (testChecker(page.checker, page.mode)) {
+            if (testChecker(page.checker, page.mode ?? 'or')) {
                 return { website, page };
             }
         }

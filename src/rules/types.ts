@@ -50,6 +50,18 @@ export interface Website<
     C = undefined
 > {
     pages: Pages,
+
+    /**
+     * checker的多条件联立关系，'and'表示所有条件均需通过才算通过，'or'表示任意条件通过即算通过  
+     * @default 'or'
+     */
+    mode?: 'and' | 'or';
+
+    /**
+     * 网站匹配条件
+     */
+    checker?: Checker | Checker[];
+
     dark: Ref<boolean>,
 
     /**

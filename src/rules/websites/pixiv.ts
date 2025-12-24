@@ -4,30 +4,26 @@ import { defineWebsite } from '../types.js'
 import { ref } from 'vue';
 
 export const pixiv = defineWebsite({
+    checker: {
+        type: 'endhost',
+        value: 'pixiv.net',
+    },
     pages: {
         users: {
-            mode: 'and',
-            checker: [{
-                type: 'endhost',
-                value: 'pixiv.net',
-            }, {
+            checker: {
                 type: 'regpath',
                 value: /^\/users\/\d+/,
-            }],
+            },
             url() {
                 const userID = location.pathname.match(/^\/users\/(\d+)/)![1];
                 return `https://${ domain }/fanbox/user/${ userID }`;
             },
         },
         artworks: {
-            mode: 'and',
-            checker: [{
-                type: 'endhost',
-                value: 'pixiv.net',
-            }, {
+            checker: {
                 type: 'regpath',
                 value: /^\/artworks\/\d+/,
-            }],
+            },
             async url() {
                 const str_id = location.pathname.match(/^\/artworks\/(\d+)/)![1];
                 const json = await requestJson({
@@ -39,14 +35,10 @@ export const pixiv = defineWebsite({
             },
         },
         novel: {
-            mode: 'and',
-            checker: [{
-                type: 'endhost',
-                value: 'pixiv.net',
-            }, {
+            checker: {
                 type: 'path',
                 value: '/novel/show.php',
-            }],
+            },
             async url() {
                 const str_id = getSearchParam('id');
                 const json = await requestJson({
@@ -58,14 +50,10 @@ export const pixiv = defineWebsite({
             },
         },
         series: {
-            mode: 'and',
-            checker: [{
-                type: 'endhost',
-                value: 'pixiv.net',
-            }, {
+            checker: {
                 type: 'regpath',
                 value: /^\/novel\/series\/\d+$/
-            }],
+            },
             async url() {
                 const str_id = location.pathname.match(/^\/novel\/series\/(\d+)$/)![1];
                 const json = await requestJson({
