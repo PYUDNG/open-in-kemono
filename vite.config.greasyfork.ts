@@ -36,6 +36,7 @@ export default defineConfig({
           'http*://*.subscribestar.adult/*',
           'http*://*.subscribestar.com/*',
           'http*://*.dlsite.com/*',
+          'http*://*.fanbox.cc/*',
         ],
         "run-at": 'document-start',
       },

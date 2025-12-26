@@ -1,3 +1,4 @@
+import './hooks.js';
 import { GM_registerMenuCommand } from '$';
 import { detectDom } from './utils/main.js';
 import { createApp } from 'vue';
@@ -40,7 +41,7 @@ const registerDomainMenu = () => domainMenuId = GM_registerMenuCommand(
     {
         id: domainMenuId,
         autoClose: false,
-        title: t('menu.domain')
+        title: t('menu.domain.label')
     }
 );
 registerDomainMenu();

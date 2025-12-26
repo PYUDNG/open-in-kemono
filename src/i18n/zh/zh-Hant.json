@@ -1,7 +1,8 @@
 {
     "button": {
         "jump": "跳轉到Kemono",
-        "loading": "載入中..."
+        "loading": "載入中...",
+        "error": "發生了錯誤"
     },
     "menu": {
         "newtab": {

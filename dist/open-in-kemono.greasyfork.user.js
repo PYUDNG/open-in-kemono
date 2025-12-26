@@ -5,7 +5,7 @@
 // @name:zh-CN         在Kemono中打开
 // @name:zh-TW         在Kemono中打開
 // @namespace          https://greasyfork.org/zh-CN/users/667968-pyudng
-// @version            1.4.1
+// @version            1.5.0
 // @author             PY-DNG
 // @description        Open corresponding kemono page from multiple services
 // @description:en     Open corresponding kemono page from multiple services
@@ -19,11 +19,13 @@
 // @match              http*://*.subscribestar.adult/*
 // @match              http*://*.subscribestar.com/*
 // @match              http*://*.dlsite.com/*
+// @match              http*://*.fanbox.cc/*
 // @require            https://cdn.jsdelivr.net/npm/vue@3.5.26/dist/vue.global.prod.js
 // @grant              GM_addStyle
 // @grant              GM_addValueChangeListener
 // @grant              GM_deleteValue
 // @grant              GM_getValue
+// @grant              GM_info
 // @grant              GM_listValues
 // @grant              GM_openInTab
 // @grant              GM_registerMenuCommand
@@ -56,11 +58,14 @@
 
   const d=new Set;const o = async e=>{d.has(e)||(d.add(e),(t=>{typeof GM_addStyle=="function"?GM_addStyle(t):(document.head||document.documentElement).appendChild(document.createElement("style")).append(t);})(e));};
 
-  o(" .oik-jump-button[data-v-417531d5]{border:2px solid var(--color-border);background-color:var(--color-bg);color:var(--color-text);padding:.25em;cursor:pointer}.oik-root{--color-text: #1a1a1a;--color-bg: #ffffff;--color-primary: #2563eb;--color-secondary: #f3f4f6;--color-border: #e5e7eb}.oik-root.oik-dark{--color-text: #f9fafb;--color-bg: #1f1f1f;--color-primary: #60a5fa;--color-secondary: #1f2937;--color-border: #374151}.oik-root .oik-disabled{filter:grayscale(1) brightness(.8);cursor:not-allowed} ");
+  o(" .oik-jump-button[data-v-10ee2d8f]{border:2px solid var(--color-border);background-color:var(--color-bg);color:var(--color-text);padding:.25em;cursor:pointer}.oik-root{--color-text: #1a1a1a;--color-bg: #ffffff;--color-primary: #2563eb;--color-secondary: #f3f4f6;--color-border: #e5e7eb}.oik-root.oik-dark{--color-text: #f9fafb;--color-bg: #1f1f1f;--color-primary: #60a5fa;--color-secondary: #1f2937;--color-border: #374151}.oik-root .oik-disabled{filter:grayscale(1) brightness(.8);cursor:not-allowed} ");
 
+  const console$1 = Object.assign( Object.create(null), window.console);
+  const fetch = window.fetch;
   var _GM_addValueChangeListener = (() => typeof GM_addValueChangeListener != "undefined" ? GM_addValueChangeListener : void 0)();
   var _GM_deleteValue = (() => typeof GM_deleteValue != "undefined" ? GM_deleteValue : void 0)();
   var _GM_getValue = (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
+  var _GM_info = (() => typeof GM_info != "undefined" ? GM_info : void 0)();
   var _GM_listValues = (() => typeof GM_listValues != "undefined" ? GM_listValues : void 0)();
   var _GM_openInTab = (() => typeof GM_openInTab != "undefined" ? GM_openInTab : void 0)();
   var _GM_registerMenuCommand = (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
@@ -88,6 +93,45 @@
     }
     return checkers[checker.type](checker.value);
   }
+  class Logger {
+static Level = {
+Debug: 0,
+Detail: 1,
+Info: 2,
+Warning: 3,
+Error: 4,
+Important: 5
+    };
+level = Logger.Level.Info;
+static LevelColor = {
+      Debug: "#94a3b8",
+      Detail: "#10b981",
+      Info: "inherit",
+      Warning: "#f59e0b",
+      Error: "#ef4444",
+      Important: "#a855f7"
+    };
+static PrefixColor = "#6366f1";
+    constructor() {
+    }
+    log(level, type, logger2 = "log", ...content) {
+      const numLevel = Logger.Level[level];
+      if (numLevel < this.level) return false;
+      if (isStringLog()) {
+        content = [
+          `%c[${_GM_info.script.name}] %c${content[0]}`,
+          `color: ${Logger.PrefixColor};`,
+          `color: ${Logger.LevelColor[level]};`
+        ];
+      }
+      console$1[logger2].apply(null, content);
+      return true;
+      function isStringLog(content2) {
+        return type === "string";
+      }
+    }
+  }
+  const logger = new Logger();
   function request(options) {
     const { promise, reject, resolve } = Promise.withResolvers();
     _GM_xmlhttpRequest({
@@ -4523,19 +4567,19 @@ i18n2[DatetimePartsSymbol](...args)
     target.__INTLIFY__ = true;
     setDevToolsHook(target.__INTLIFY_DEVTOOLS_GLOBAL_HOOK__);
   }
-  const button$2 = { "jump": "跳转到Kemono", "loading": "加载中..." };
+  const button$2 = { "jump": "跳转到Kemono", "loading": "加载中...", "error": "发生了错误" };
   const menu$2 = { "newtab": { "true": "[✔] 在新标签页中打开", "false": "[-] 在新标签页中打开", "title": "跳转到Kemono时，是新建标签页打开Kemono页面，还是直接将当前标签页跳转到Kemono页面" }, "domain": { "label": "Kemono域名: {domain}", "prompt": "请设置希望跳转的kemono域名：" } };
   const zhHans = {
     button: button$2,
     menu: menu$2
   };
-  const button$1 = { "jump": "跳轉到Kemono", "loading": "載入中..." };
+  const button$1 = { "jump": "跳轉到Kemono", "loading": "載入中...", "error": "發生了錯誤" };
   const menu$1 = { "newtab": { "true": "[✔] 在新標籤頁中打開", "false": "[-] 在新標籤頁中打開", "title": "跳轉到Kemono時，是新增標籤頁打開Kemono頁面，還是直接將目前標籤頁跳轉到Kemono頁面" }, "domain": { "label": "Kemono域名: {domain}", "prompt": "請設定希望跳轉的kemono網域：" } };
   const zhHant = {
     button: button$1,
     menu: menu$1
   };
-  const button = { "jump": "Open in Kemono", "loading": "loading..." };
+  const button = { "jump": "Open in Kemono", "loading": "loading...", "error": "something went wrong" };
   const menu = { "newtab": { "true": "[✔] Open in new tab", "false": "[-] Open in new tab", "title": "Open the Kemono page in a new tab or directly redirect the current tab to the Kemono page" }, "domain": { "label": "Kemono domain: {domain}", "prompt": "Please set the desired Kemono domain to redirect to:" } };
   const en = {
     button,
@@ -4750,9 +4794,47 @@ i18n2[DatetimePartsSymbol](...args)
     },
     dark: Vue.ref(false)
   });
+  const fanbox = defineWebsite({
+    checker: {
+      type: "endhost",
+      value: "fanbox.cc"
+    },
+    dark: Vue.ref(false),
+    pages: {
+      creator: {
+        mode: "or",
+        checker: [{
+          type: "path",
+          value: "/"
+        }, {
+          type: "path",
+          value: "/posts"
+        }, {
+          type: "path",
+          value: "/plans"
+        }, {
+          type: "startpath",
+          value: "/posts/"
+        }],
+        async url() {
+          const userName = location.hostname.split(".", 1)[0];
+          const response = await fetch(`https://api.fanbox.cc/creator.get?creatorId=${userName}`, {
+            method: "GET",
+            headers: {
+              accept: "application/json, text/plain, */*"
+            }
+          });
+          const data = await response.json();
+          const userID = data.body.user.userId;
+          return `https://${domain}/fanbox/user/${userID}`;
+        }
+      }
+    }
+  });
   const rules = Object.freeze( Object.defineProperty({
     __proto__: null,
     dlsite,
+    fanbox,
     fantia,
     pixiv,
     subscribestar
@@ -4795,11 +4877,21 @@ i18n2[DatetimePartsSymbol](...args)
     setup(__props) {
       const { t: t2 } = useI18n();
       const loading = Vue.ref(false);
+      const error = Vue.ref(false);
       async function doJump() {
         if (loading.value) return;
         if (!website.value || !page.value) return;
         loading.value = true;
-        const url = await Promise.resolve(page.value.url());
+        let url;
+        try {
+          url = await Promise.resolve(page.value.url());
+        } catch (err) {
+          logger.log("Error", "string", "log", "error while getting url");
+          logger.log("Error", "raw", "error", err);
+          loading.value = false;
+          error.value = true;
+          return;
+        }
         if (storage.get("newtab")) {
           _GM_openInTab(url, {
             active: true,
@@ -4818,7 +4910,7 @@ i18n2[DatetimePartsSymbol](...args)
           Vue.withDirectives(Vue.createElementVNode("div", {
             class: Vue.normalizeClass(["oik-jump-button", { ["oik-disabled"]: loading.value }]),
             onClick: doJump
-          }, Vue.toDisplayString(loading.value ? Vue.unref(t2)("button.loading") : Vue.unref(t2)("button.jump")), 3), [
+          }, Vue.toDisplayString(loading.value ? Vue.unref(t2)("button.loading") : error.value ? Vue.unref(t2)("button.error") : Vue.unref(t2)("button.jump")), 3), [
             [Vue.vShow, Vue.unref(page)]
           ])
         ], 2);
@@ -4832,7 +4924,7 @@ i18n2[DatetimePartsSymbol](...args)
     }
     return target;
   };
-  const JumpButton = _export_sfc(_sfc_main, [["__scopeId", "data-v-417531d5"]]);
+  const JumpButton = _export_sfc(_sfc_main, [["__scopeId", "data-v-10ee2d8f"]]);
   const t = i18n.global.t;
   Vue.createApp(JumpButton).use(i18n).mount(
     (() => {
@@ -4864,7 +4956,7 @@ i18n2[DatetimePartsSymbol](...args)
     {
       id: domainMenuId,
       autoClose: false,
-      title: t("menu.domain")
+      title: t("menu.domain.label")
     }
   );
   registerDomainMenu();

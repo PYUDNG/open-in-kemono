@@ -16,6 +16,10 @@ You can find this project on
 | Pixiv | `/users/123456` | ✔ |
 | Pixiv | `/novel/show.php?id=123456` | ✔ |
 | Pixiv | `/novel/series/123456` | ✔ |
+| Fanbox | `creator.fanbox.cc/posts` | ✔ |
+| Fanbox | `creator.fanbox.cc/posts/123456` | ✔ |
+| Fanbox | `creator.fanbox.cc/plans` | ✔ |
+| Fanbox | `creator.fanbox.cc/plans/123456` | ✔ |
 | Fantia | `/fanclubs/123456` | ✔ |
 | Fantia | `/posts/123456` | ✔ |
 | SubscribeStar | `/creator-id` | ✔ |

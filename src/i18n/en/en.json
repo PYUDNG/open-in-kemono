@@ -1,7 +1,8 @@
 {
     "button": {
         "jump": "Open in Kemono",
-        "loading": "loading..."
+        "loading": "loading...",
+        "error": "something went wrong"
     },
     "menu": {
         "newtab": {

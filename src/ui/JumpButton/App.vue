@@ -4,12 +4,16 @@
     import { website, page } from '@/location';
     import { GM_openInTab } from '$';
     import storage from '@/storage.js';
+    import { logger } from '@/utils/main';
 
     // Vue i18n
     const { t } = useI18n();
 
     /** 是否正在获取kemono跳转目标url */
     const loading = ref(false);
+
+    /** 是否发生了错误 */
+    const error = ref(false);
 
     /**
      * 根据当前页面的对应规则，执行跳转
@@ -20,8 +24,21 @@
         // 仅在支持的页面上跳转
         if (!website.value || !page.value) return;
 
+        // 进入加载状态
         loading.value = true;
-        const url = await Promise.resolve(page.value.url());
+
+        // 根据规则逻辑获取跳转目标url
+        let url;
+        try {
+            url = await Promise.resolve(page.value.url());
+        } catch(err) {
+            logger.log('Error', 'string', 'log', 'error while getting url');
+            logger.log('Error', 'raw', 'error', err);
+            loading.value = false;
+            error.value = true;
+            return;
+        }
+
         if (storage.get('newtab')) {
             GM_openInTab(url, {
                 active: true,
@@ -46,7 +63,7 @@
             :class="{ ['oik-disabled']: loading }"
             @click="doJump"
         >
-            {{ loading ? t('button.loading') : t('button.jump') }}
+            {{ loading ? t('button.loading') : error ? t('button.error') : t('button.jump') }}
         </div>
     </div>
 </template>
