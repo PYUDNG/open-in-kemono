@@ -5,7 +5,7 @@
 // @name:zh-CN         在Kemono中打开
 // @name:zh-TW         在Kemono中打開
 // @namespace          https://greasyfork.org/zh-CN/users/667968-pyudng
-// @version            1.6.0
+// @version            1.6.1
 // @author             PY-DNG
 // @description        Open corresponding kemono page from multiple services
 // @description:en     Open corresponding kemono page from multiple services
@@ -4838,7 +4838,21 @@ i18n2[DatetimePartsSymbol](...args)
       value: "patreon.com"
     },
     pages: {
-      makerid: {
+post: {
+        checker: {
+          type: "regpath",
+          value: /^\/posts\/\d+$/
+        },
+        url() {
+          const dataElm = document.querySelector("#__NEXT_DATA__");
+          if (!dataElm) throw new Error("#__NEXT_DATA__ not found");
+          const data = JSON.parse(dataElm.innerHTML);
+          const userID = data.props.pageProps.bootstrapEnvelope.pageBootstrap.campaign.included.find((o) => o.type === "user").id;
+          const postID = location.pathname.match(/^\/posts\/(\d+)$/)[1];
+          return `https://${domain}/patreon/user/${userID}/post/${postID}`;
+        }
+      },
+general: {
         checker: {
           type: "func",
           value: () => {
@@ -4855,7 +4869,7 @@ i18n2[DatetimePartsSymbol](...args)
           const dataElm = document.querySelector("#__NEXT_DATA__");
           if (!dataElm) throw new Error("#__NEXT_DATA__ not found");
           const data = JSON.parse(dataElm.innerHTML);
-          const userID = data.props.pageProps.bootstrapEnvelope.pageBootstrap.campaign.included.find((o) => o.type === "user").id;
+          const userID = data.props.pageProps.bootstrapEnvelope.pageBootstrap.post.included.find((o) => o.type === "user").id;
           return `https://${domain}/patreon/user/${userID}`;
         }
       }
