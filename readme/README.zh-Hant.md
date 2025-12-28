@@ -12,7 +12,7 @@
 > 如果你不熟悉使用者腳本，請先閱讀[如何安裝使用者腳本](https://greasyfork.org/help/installing-user-scripts)
 
 你可以選擇以下任一方式安裝：
-- [從 Github 安裝](../../raw/refs/heads/main/dist/open-in-kemono.user.js)
+- [從 Github 安裝](https://raw.githubusercontent.com/PYUDNG/open-in-kemono/main/dist/open-in-kemono.user.js)
   包含程式碼壓縮，腳本檔案體積更小
 - [從 Greasyfork 安裝](https://greasyfork.org/zh-CN/scripts/559907-open-in-kemono)
   無程式碼壓縮，符合Greasyfork程式碼準則

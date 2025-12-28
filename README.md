@@ -12,7 +12,7 @@ You can find this project on
 > If you're not familiar with userscripts, please read [How to install userscripts](https://greasyfork.org/help/installing-user-scripts) first
 
 You can choose one of the following to install:
-- [Install from Github](../../raw/refs/heads/main/dist/open-in-kemono.user.js)
+- [Install from Github](https://raw.githubusercontent.com/PYUDNG/open-in-kemono/main/dist/open-in-kemono.user.js)
 - [Install from Greasyfork](https://greasyfork.org/zh-CN/scripts/559907-open-in-kemono)
 
 ## Supported services
