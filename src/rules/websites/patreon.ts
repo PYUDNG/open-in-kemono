@@ -12,14 +12,20 @@ export const patreon = defineWebsite({
         post: {
             checker: {
                 type: 'regpath',
-                value: /^\/posts\/\d+$/
+                value: /^\/posts\/[^\/\d]*\d+$/
             },
             url() {
                 const dataElm = document.querySelector('#__NEXT_DATA__');
                 if (!dataElm) throw new Error('#__NEXT_DATA__ not found');
                 const data = JSON.parse(dataElm.innerHTML);
-                const userID = data.props.pageProps.bootstrapEnvelope.pageBootstrap.campaign.included.find((o: any) => o.type === 'user').id as string;
-                const postID = location.pathname.match(/^\/posts\/(\d+)$/)![1];
+                const pageBootstrap = data.props.pageProps.bootstrapEnvelope.pageBootstrap;
+                const items = [
+                    ...(pageBootstrap.post ? pageBootstrap.post.included : []),
+                    ...(pageBootstrap.campaign ? pageBootstrap.campaign.included : []),
+                ] as { type: string, id: string }[];
+                const userID = items.find((o: any) => o.type === 'user')?.id;
+                if (!userID) throw new Error('cannot get patreon userID');
+                const postID = location.pathname.match(/^\/posts\/[^\/\d]*(\d+)$/)![1];
                 return `https://${ domain }/patreon/user/${ userID }/post/${ postID }`;
             },
         },
@@ -42,7 +48,13 @@ export const patreon = defineWebsite({
                 const dataElm = document.querySelector('#__NEXT_DATA__');
                 if (!dataElm) throw new Error('#__NEXT_DATA__ not found');
                 const data = JSON.parse(dataElm.innerHTML);
-                const userID = data.props.pageProps.bootstrapEnvelope.pageBootstrap.post.included.find((o: any) => o.type === 'user').id as string;
+                const pageBootstrap = data.props.pageProps.bootstrapEnvelope.pageBootstrap;
+                const items = [
+                    ...(pageBootstrap.post ? pageBootstrap.post.included : []),
+                    ...(pageBootstrap.campaign ? pageBootstrap.campaign.included : []),
+                ] as { type: string, id: string }[];
+                const userID = items.find((o: any) => o.type === 'user')?.id;
+                if (!userID) throw new Error('cannot get patreon userID');
                 return `https://${ domain }/patreon/user/${ userID }`;
             }
         },
