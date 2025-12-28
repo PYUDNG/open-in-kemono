@@ -29,6 +29,11 @@ You can choose one of the following to install:
 | Fanbox | `creator.fanbox.cc/posts/123456` | ✔ |
 | Fanbox | `creator.fanbox.cc/plans` | ✔ |
 | Fanbox | `creator.fanbox.cc/plans/123456` | ✔ |
+| Patreon | `Creator homepage` | ✔ |
+| Patreon | `Collections list` | ✔ |
+| Patreon | `Post` | ✔ |
+| Patreon | `Collection` | ✔ |
+| Patreon | `About` | ✔ |
 | Fantia | `/fanclubs/123456` | ✔ |
 | Fantia | `/posts/123456` | ✔ |
 | SubscribeStar | `/creator-id` | ✔ |

@@ -37,6 +37,7 @@ export default defineConfig({
           'http*://*.subscribestar.com/*',
           'http*://*.dlsite.com/*',
           'http*://*.fanbox.cc/*',
+          'http*://www.patreon.com/*',
         ],
         "run-at": 'document-start',
       },

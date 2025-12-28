@@ -5,7 +5,7 @@
 // @name:zh-CN         在Kemono中打开
 // @name:zh-TW         在Kemono中打開
 // @namespace          https://greasyfork.org/zh-CN/users/667968-pyudng
-// @version            1.5.0
+// @version            1.6.0
 // @author             PY-DNG
 // @description        Open corresponding kemono page from multiple services
 // @description:en     Open corresponding kemono page from multiple services
@@ -20,6 +20,7 @@
 // @match              http*://*.subscribestar.com/*
 // @match              http*://*.dlsite.com/*
 // @match              http*://*.fanbox.cc/*
+// @match              http*://www.patreon.com/*
 // @require            https://cdn.jsdelivr.net/npm/vue@3.5.26/dist/vue.global.prod.js
 // @grant              GM_addStyle
 // @grant              GM_addValueChangeListener
@@ -58,7 +59,7 @@
 
   const d=new Set;const o = async e=>{d.has(e)||(d.add(e),(t=>{typeof GM_addStyle=="function"?GM_addStyle(t):(document.head||document.documentElement).appendChild(document.createElement("style")).append(t);})(e));};
 
-  o(" .oik-jump-button[data-v-10ee2d8f]{border:2px solid var(--color-border);background-color:var(--color-bg);color:var(--color-text);padding:.25em;cursor:pointer}.oik-root{--color-text: #1a1a1a;--color-bg: #ffffff;--color-primary: #2563eb;--color-secondary: #f3f4f6;--color-border: #e5e7eb}.oik-root.oik-dark{--color-text: #f9fafb;--color-bg: #1f1f1f;--color-primary: #60a5fa;--color-secondary: #1f2937;--color-border: #374151}.oik-root .oik-disabled{filter:grayscale(1) brightness(.8);cursor:not-allowed} ");
+  o(" .oik-jump-button[data-v-acf4dc52]{border:2px solid var(--color-border);background-color:var(--color-bg);color:var(--color-text);padding:.25em;cursor:pointer;font-size:14px}.oik-root{--color-text: #1a1a1a;--color-bg: #ffffff;--color-primary: #2563eb;--color-secondary: #f3f4f6;--color-border: #e5e7eb}.oik-root.oik-dark{--color-text: #f9fafb;--color-bg: #1f1f1f;--color-primary: #60a5fa;--color-secondary: #1f2937;--color-border: #374151}.oik-root .oik-disabled{filter:grayscale(1) brightness(.8);cursor:not-allowed} ");
 
   const console$1 = Object.assign( Object.create(null), window.console);
   const fetch = window.fetch;
@@ -4831,11 +4832,42 @@ i18n2[DatetimePartsSymbol](...args)
       }
     }
   });
+  const patreon = defineWebsite({
+    checker: {
+      type: "endhost",
+      value: "patreon.com"
+    },
+    pages: {
+      makerid: {
+        checker: {
+          type: "func",
+          value: () => {
+            const hasElement = (selector) => !!document.querySelector(selector);
+            const hasDataTag = (tag) => hasElement(`[data-tag="${tag}"]`);
+            return hasElement("#__NEXT_DATA__") && [
+              "creator-become-a-patron-button",
+"creator-header-see-membership-options",
+"collections-share-button"
+].some((tag) => hasDataTag(tag));
+          }
+        },
+        url() {
+          const dataElm = document.querySelector("#__NEXT_DATA__");
+          if (!dataElm) throw new Error("#__NEXT_DATA__ not found");
+          const data = JSON.parse(dataElm.innerHTML);
+          const userID = data.props.pageProps.bootstrapEnvelope.pageBootstrap.campaign.included.find((o) => o.type === "user").id;
+          return `https://${domain}/patreon/user/${userID}`;
+        }
+      }
+    },
+    dark: Vue.ref(false)
+  });
   const rules = Object.freeze( Object.defineProperty({
     __proto__: null,
     dlsite,
     fanbox,
     fantia,
+    patreon,
     pixiv,
     subscribestar
   }, Symbol.toStringTag, { value: "Module" }));
@@ -4924,7 +4956,7 @@ i18n2[DatetimePartsSymbol](...args)
     }
     return target;
   };
-  const JumpButton = _export_sfc(_sfc_main, [["__scopeId", "data-v-10ee2d8f"]]);
+  const JumpButton = _export_sfc(_sfc_main, [["__scopeId", "data-v-acf4dc52"]]);
   const t = i18n.global.t;
   Vue.createApp(JumpButton).use(i18n).mount(
     (() => {

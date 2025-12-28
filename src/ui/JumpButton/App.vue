@@ -75,6 +75,7 @@
         color: var(--color-text);
         padding: 0.25em;
         cursor: pointer;
+        font-size: 14px;
     }
 </style>
 
