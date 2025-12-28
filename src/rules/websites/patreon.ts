@@ -8,7 +8,24 @@ export const patreon = defineWebsite({
         value: 'patreon.com'
     },
     pages: {
-        makerid: {
+        // 帖子内部：跳转到对应帖子页面
+        post: {
+            checker: {
+                type: 'regpath',
+                value: /^\/posts\/\d+$/
+            },
+            url() {
+                const dataElm = document.querySelector('#__NEXT_DATA__');
+                if (!dataElm) throw new Error('#__NEXT_DATA__ not found');
+                const data = JSON.parse(dataElm.innerHTML);
+                const userID = data.props.pageProps.bootstrapEnvelope.pageBootstrap.campaign.included.find((o: any) => o.type === 'user').id as string;
+                const postID = location.pathname.match(/^\/posts\/(\d+)$/)![1];
+                return `https://${ domain }/patreon/user/${ userID }/post/${ postID }`;
+            },
+        },
+
+        // 通用跳转：跳转到创作者页面
+        general: {
             checker: {
                 type: 'func',
                 value: () => {
@@ -25,10 +42,10 @@ export const patreon = defineWebsite({
                 const dataElm = document.querySelector('#__NEXT_DATA__');
                 if (!dataElm) throw new Error('#__NEXT_DATA__ not found');
                 const data = JSON.parse(dataElm.innerHTML);
-                const userID = data.props.pageProps.bootstrapEnvelope.pageBootstrap.campaign.included.find((o: any) => o.type === 'user').id as string;
+                const userID = data.props.pageProps.bootstrapEnvelope.pageBootstrap.post.included.find((o: any) => o.type === 'user').id as string;
                 return `https://${ domain }/patreon/user/${ userID }`;
             }
-        }
+        },
     },
     dark: ref(false),
 });

@@ -49,6 +49,9 @@ export interface Website<
     Pages extends Record<string, Page<any>> = Record<string, Page<any>>,
     C = undefined
 > {
+    /**
+     * 该网站下的页面规则列表，第一个被匹配到的将被视作当前页面
+     */
     pages: Pages,
 
     /**
