@@ -1,12 +1,12 @@
 # 在 Kemono 中開啟
 
-這是一個[使用者腳本](https://greasyfork.org/help/installing-user-scripts)，可讓你從[多個服務](#支援的服務)跳轉到對應的 [kemono](https://kemono.cr/) 頁面
+這是一個[使用者腳本](https://greasyfork.org/help/installing-user-scripts)，可讓你從[多個網站](#支援的網站)跳轉到對應的 [kemono](https://kemono.cr/) 頁面
 
 本項目發佈於
 - [Github](https://github.com/PYUDNG/open-in-kemono)
 - [Greasyfork](https://greasyfork.org/scripts/559907)
 
-## 支援的服務
+## 支援的網站
 > **提示：功能需求提交**  
 > 本腳本仍在持續開發中，你可以透過[提交新issue](https://github.com/PYUDNG/open-in-kemono/issues)來申請新增支援的服務或頁面
 
