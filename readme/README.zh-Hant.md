@@ -38,5 +38,7 @@
 |               |                  `About`                   |    ✔     |
 |    Fantia     |             `/fanclubs/123456`             |    ✔     |
 |               |              `/posts/123456`               |    ✔     |
+|    Boosty     |               `/creator-id`                |    ✔     |
+|               |          `/creator-id/posts/uuid`          |    ✔     |
 | SubscribeStar |               `/creator-id`                |    ✔     |
 |    DLSite     | `/home/circle/profile/=/maker_id/RG123456` |    ✔     |

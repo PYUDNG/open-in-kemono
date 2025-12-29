@@ -38,6 +38,7 @@ export default defineConfig({
           'http*://*.dlsite.com/*',
           'http*://*.fanbox.cc/*',
           'http*://www.patreon.com/*',
+          'http*://*.boosty.to/*',
         ],
         "run-at": 'document-start',
       },

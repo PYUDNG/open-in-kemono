@@ -32,7 +32,7 @@
         try {
             url = await Promise.resolve(page.value.url());
         } catch(err) {
-            logger.log('Error', 'string', 'log', 'error while getting url');
+            logger.simple('Error', 'error while getting url');
             logger.log('Error', 'raw', 'error', err);
             loading.value = false;
             error.value = true;

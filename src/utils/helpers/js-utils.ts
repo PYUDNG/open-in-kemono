@@ -20,8 +20,12 @@ export type CheckerType = keyof typeof checkers;
 
 export type Checker = {
     [T in CheckerType]: {
+        /** 类型 */
         type: T;
+        /** 值 */
         value: Parameters<typeof checkers[T]>[0];
+        /** 是否反转判断结果 */
+        invert?: boolean;
     }
 }[CheckerType];
 
@@ -41,10 +45,15 @@ export function testChecker(
     }
 
     // 单个 Checker 场景：调用对应 checker 函数
-    return checkers[checker.type](checker.value);
+    const result = checkers[checker.type](checker.value);
+
+    // 利用 !== 运算符实现反转逻辑
+    const invert = !!checker.invert;
+    return invert !== result;
 }
 
 type LogLevel = keyof typeof Logger.Level;
+type LogLevelNum = typeof Logger.Level[LogLevel];
 type ConsoleMethods = {
   [K in keyof Console]: Console[K] extends (...args: any[]) => any ? K : never
 }[keyof Console];
@@ -77,7 +86,7 @@ class Logger {
      * 当前日志输出等级
      * @default Logger.Level.Info
      */
-    public level = Logger.Level.Info;
+    public level: LogLevelNum = Logger.Level.Info;
 
     /**
      * 日志等级所对应的纯文本输出颜色
@@ -129,9 +138,9 @@ class Logger {
         // 纯文本输出：按照预定义颜色格式化
         if (isStringLog(content)) {
             content = [
-                `%c[${ GM_info.script.name }] %c${ content[0] }`,
+                `%c[${ GM_info.script.name }] [${ level }]\n%c${ content[0] }`,
                 `color: ${ Logger.PrefixColor };`,
-                `color: ${ Logger.LevelColor[level] };`
+                `color: ${ Logger.LevelColor[level] };`,
             ];
         }
 
@@ -144,6 +153,14 @@ class Logger {
             return type === 'string';
         }
     }
+
+    /**
+     * 简化调用：写字符串日志
+     */
+    simple(level: LogLevel, content: string): ReturnType<typeof this.log> {
+        return this.log(level, 'string', 'log', content);
+    }
 }
 
 export const logger = new Logger();
+logger.level = import.meta.env.PROD ? Logger.Level.Info : Logger.Level.Debug;

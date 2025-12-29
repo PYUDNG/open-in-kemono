@@ -5,7 +5,7 @@
 // @name:zh-CN         在Kemono中打开
 // @name:zh-TW         在Kemono中打開
 // @namespace          https://greasyfork.org/zh-CN/users/667968-pyudng
-// @version            1.6.2
+// @version            1.7.0
 // @author             PY-DNG
 // @description        Open corresponding kemono page from multiple services
 // @description:en     Open corresponding kemono page from multiple services
@@ -21,6 +21,7 @@
 // @match              http*://*.dlsite.com/*
 // @match              http*://*.fanbox.cc/*
 // @match              http*://www.patreon.com/*
+// @match              http*://*.boosty.to/*
 // @require            https://cdn.jsdelivr.net/npm/vue@3.5.26/dist/vue.global.prod.js
 // @grant              GM_addStyle
 // @grant              GM_addValueChangeListener
@@ -59,7 +60,7 @@
 
   const d=new Set;const o = async e=>{d.has(e)||(d.add(e),(t=>{typeof GM_addStyle=="function"?GM_addStyle(t):(document.head||document.documentElement).appendChild(document.createElement("style")).append(t);})(e));};
 
-  o(" .oik-jump-button[data-v-acf4dc52]{border:2px solid var(--color-border);background-color:var(--color-bg);color:var(--color-text);padding:.25em;cursor:pointer;font-size:14px}.oik-root{--color-text: #1a1a1a;--color-bg: #ffffff;--color-primary: #2563eb;--color-secondary: #f3f4f6;--color-border: #e5e7eb}.oik-root.oik-dark{--color-text: #f9fafb;--color-bg: #1f1f1f;--color-primary: #60a5fa;--color-secondary: #1f2937;--color-border: #374151}.oik-root .oik-disabled{filter:grayscale(1) brightness(.8);cursor:not-allowed} ");
+  o(" .oik-jump-button[data-v-b18053ef]{border:2px solid var(--color-border);background-color:var(--color-bg);color:var(--color-text);padding:.25em;cursor:pointer;font-size:14px}.oik-root{--color-text: #1a1a1a;--color-bg: #ffffff;--color-primary: #2563eb;--color-secondary: #f3f4f6;--color-border: #e5e7eb}.oik-root.oik-dark{--color-text: #f9fafb;--color-bg: #1f1f1f;--color-primary: #60a5fa;--color-secondary: #1f2937;--color-border: #374151}.oik-root .oik-disabled{filter:grayscale(1) brightness(.8);cursor:not-allowed} ");
 
   const console$1 = Object.assign( Object.create(null), window.console);
   const fetch = window.fetch;
@@ -92,7 +93,9 @@
       else
         return checker.some((c) => testChecker(c));
     }
-    return checkers[checker.type](checker.value);
+    const result = checkers[checker.type](checker.value);
+    const invert = !!checker.invert;
+    return invert !== result;
   }
   class Logger {
 static Level = {
@@ -120,7 +123,8 @@ static PrefixColor = "#6366f1";
       if (numLevel < this.level) return false;
       if (isStringLog()) {
         content = [
-          `%c[${_GM_info.script.name}] %c${content[0]}`,
+          `%c[${_GM_info.script.name}] [${level}]
+%c${content[0]}`,
           `color: ${Logger.PrefixColor};`,
           `color: ${Logger.LevelColor[level]};`
         ];
@@ -131,8 +135,12 @@ static PrefixColor = "#6366f1";
         return type === "string";
       }
     }
+simple(level, content) {
+      return this.log(level, "string", "log", content);
+    }
   }
   const logger = new Logger();
+  logger.level = Logger.Level.Info;
   function request(options) {
     const { promise, reject, resolve } = Promise.withResolvers();
     _GM_xmlhttpRequest({
@@ -4888,8 +4896,49 @@ general: {
     },
     dark: Vue.ref(false)
   });
+  const boosty = defineWebsite({
+    mode: "and",
+    checker: [{
+      type: "endhost",
+      value: "boosty.to"
+    }, {
+type: "startpath",
+      value: "/app/",
+      invert: true
+    }, {
+type: "path",
+      value: "/",
+      invert: true
+    }],
+    pages: {
+post: {
+        checker: {
+          type: "regpath",
+          value: /^\/[^\/]+\/posts\/[0-9a-f\-]+\/?$/
+        },
+        url() {
+          const match = location.pathname.match(/^\/([^\/]+)\/posts\/([0-9a-f\-]+)\/?$/);
+          const userID = match[1];
+          const postID = match[2];
+          return `https://${domain}/boosty/user/${userID}/post/${postID}`;
+        }
+      },
+general: {
+        checker: {
+          type: "switch",
+          value: true
+        },
+        url() {
+          const userID = location.pathname.substring(1).split("/", 1)[0];
+          return `https://${domain}/boosty/user/${userID}`;
+        }
+      }
+    },
+    dark: Vue.ref(false)
+  });
   const rules = Object.freeze( Object.defineProperty({
     __proto__: null,
+    boosty,
     dlsite,
     fanbox,
     fantia,
@@ -4898,25 +4947,31 @@ general: {
     subscribestar
   }, Symbol.toStringTag, { value: "Module" }));
   const locate = () => {
-    for (const website2 of Object.values(rules)) {
+    for (const [websiteName2, website2] of Object.entries(rules)) {
       if (website2.checker && !testChecker(website2.checker, website2.mode ?? "or")) continue;
-      for (const page2 of Object.values(website2.pages)) {
+      for (const [pageName2, page2] of Object.entries(website2.pages)) {
         if (testChecker(page2.checker, page2.mode ?? "or")) {
-          return { website: website2, page: page2 };
+          return { website: website2, page: page2, websiteName: websiteName2, pageName: pageName2 };
         }
       }
     }
-    return { website: null, page: null };
+    return { website: null, page: null, websiteName: "unknown", pageName: "unknown" };
   };
   const location$1 = locate();
   const website = Vue.ref(location$1.website);
   const page = Vue.ref(location$1.page);
+  const websiteName = Vue.ref(location$1.websiteName);
+  const pageName = Vue.ref(location$1.pageName);
+  logger.simple("Detail", `Initial location: ${websiteName.value} / ${pageName.value}`);
   const urlMonitor = new URLChangeMonitor();
   urlMonitor.init();
   urlMonitor.onUrlChange(() => {
     const location2 = locate();
     website.value = location2.website;
     page.value = location2.page;
+    websiteName.value = location2.websiteName;
+    pageName.value = location2.pageName;
+    logger.simple("Detail", `Updated location: ${websiteName.value} / ${pageName.value}`);
   });
   Vue.watch(website, (newWebsite, oldWebsite) => {
     Vue.toRaw(oldWebsite)?.leave?.();
@@ -4944,7 +4999,7 @@ general: {
         try {
           url = await Promise.resolve(page.value.url());
         } catch (err) {
-          logger.log("Error", "string", "log", "error while getting url");
+          logger.simple("Error", "error while getting url");
           logger.log("Error", "raw", "error", err);
           loading.value = false;
           error.value = true;
@@ -4982,7 +5037,7 @@ general: {
     }
     return target;
   };
-  const JumpButton = _export_sfc(_sfc_main, [["__scopeId", "data-v-acf4dc52"]]);
+  const JumpButton = _export_sfc(_sfc_main, [["__scopeId", "data-v-b18053ef"]]);
   const t = i18n.global.t;
   Vue.createApp(JumpButton).use(i18n).mount(
     (() => {
