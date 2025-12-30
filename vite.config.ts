@@ -39,6 +39,7 @@ export default defineConfig({
                     'http*://*.fanbox.cc/*',
                     'http*://www.patreon.com/*',
                     'http*://*.boosty.to/*',
+                    'http*://*.gumroad.com/*',
                 ],
                 "run-at": 'document-start',
             },
