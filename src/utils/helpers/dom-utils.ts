@@ -1,3 +1,5 @@
+import { addEventListener } from "@/hooks";
+
 // DOM检测选项
 interface DetectDomOptions {
     root: Node;
@@ -146,4 +148,11 @@ function selectAll(root: Node, selectors: string[]): HTMLElement[] {
     return selectors.flatMap(selector => {
         return Array.from(root.querySelectorAll<HTMLElement>(selector));
     });
+}
+
+export function injectUserscriptStyle(doc: DocumentOrShadowRoot): void {
+    const inject = () => doc.adoptedStyleSheets = (window as any)._oikStyles;
+    document.readyState !== 'loading' ?
+        inject() :
+        addEventListener.call(document, 'DOMContentLoaded', inject, { once: true });
 }

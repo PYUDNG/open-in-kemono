@@ -5,7 +5,7 @@
 // @name:zh-CN         在Kemono中打开
 // @name:zh-TW         在Kemono中打開
 // @namespace          https://greasyfork.org/zh-CN/users/667968-pyudng
-// @version            1.7.0
+// @version            1.8.0
 // @author             PY-DNG
 // @description        Open corresponding kemono page from multiple services
 // @description:en     Open corresponding kemono page from multiple services
@@ -23,7 +23,6 @@
 // @match              http*://www.patreon.com/*
 // @match              http*://*.boosty.to/*
 // @require            https://cdn.jsdelivr.net/npm/vue@3.5.26/dist/vue.global.prod.js
-// @grant              GM_addStyle
 // @grant              GM_addValueChangeListener
 // @grant              GM_deleteValue
 // @grant              GM_getValue
@@ -58,12 +57,13 @@
 
   const Vue__namespace = _interopNamespaceDefault(Vue);
 
-  const d=new Set;const o = async e=>{d.has(e)||(d.add(e),(t=>{typeof GM_addStyle=="function"?GM_addStyle(t):(document.head||document.documentElement).appendChild(document.createElement("style")).append(t);})(e));};
+  const n=new Set;const o = async e=>{n.has(e)||(n.add(e),(o=>{const t=new CSSStyleSheet;t.replaceSync(o),Array.isArray(window._oikStyles)?window._oikStyles.push(t):window._oikStyles=[t];})(e));};
 
-  o(" .oik-jump-button[data-v-b18053ef]{border:2px solid var(--color-border);background-color:var(--color-bg);color:var(--color-text);padding:.25em;cursor:pointer;font-size:14px}.oik-root{--color-text: #1a1a1a;--color-bg: #ffffff;--color-primary: #2563eb;--color-secondary: #f3f4f6;--color-border: #e5e7eb}.oik-root.oik-dark{--color-text: #f9fafb;--color-bg: #1f1f1f;--color-primary: #60a5fa;--color-secondary: #1f2937;--color-border: #374151}.oik-root .oik-disabled{filter:grayscale(1) brightness(.8);cursor:not-allowed} ");
+  o(" .oik-jump-button[data-v-b93c4b87]{border:2px solid var(--color-border);background-color:var(--color-bg);color:var(--color-text);padding:.25em;cursor:pointer;font-size:14px}.oik-root{--color-text: #1a1a1a;--color-bg: #ffffff;--color-primary: #2563eb;--color-secondary: #f3f4f6;--color-border: #e5e7eb}.oik-root.oik-dark{--color-text: #f9fafb;--color-bg: #1f1f1f;--color-primary: #60a5fa;--color-secondary: #1f2937;--color-border: #374151}.oik-root .oik-disabled{filter:grayscale(1) brightness(.8);cursor:not-allowed} ");
 
   const console$1 = Object.assign( Object.create(null), window.console);
   const fetch = window.fetch;
+  const addEventListener = EventTarget.prototype.addEventListener;
   var _GM_addValueChangeListener = (() => typeof GM_addValueChangeListener != "undefined" ? GM_addValueChangeListener : void 0)();
   var _GM_deleteValue = (() => typeof GM_deleteValue != "undefined" ? GM_deleteValue : void 0)();
   var _GM_getValue = (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
@@ -355,6 +355,10 @@ triggerUrlChange(action, oldUrl, targetUrl, state) {
     return selectors.flatMap((selector) => {
       return Array.from(root.querySelectorAll(selector));
     });
+  }
+  function injectUserscriptStyle(doc) {
+    const inject2 = () => doc.adoptedStyleSheets = window._oikStyles;
+    document.readyState !== "loading" ? inject2() : addEventListener.call(document, "DOMContentLoaded", inject2, { once: true });
   }
   class UserscriptStorage {
     storage;
@@ -4998,6 +5002,7 @@ general: {
         let url;
         try {
           url = await Promise.resolve(page.value.url());
+          error.value = false;
         } catch (err) {
           logger.simple("Error", "error while getting url");
           logger.log("Error", "raw", "error", err);
@@ -5037,13 +5042,17 @@ general: {
     }
     return target;
   };
-  const JumpButton = _export_sfc(_sfc_main, [["__scopeId", "data-v-b18053ef"]]);
+  const JumpButton = _export_sfc(_sfc_main, [["__scopeId", "data-v-b93c4b87"]]);
   const t = i18n.global.t;
   Vue.createApp(JumpButton).use(i18n).mount(
     (() => {
+      const container = document.createElement("div");
+      const shadowroot = container.attachShadow({ mode: "open" });
       const app = document.createElement("div");
       app.style.cssText = "position: fixed; right: 0; bottom: 0; padding: 0; margin: 0; border: 0; z-index: 10000;";
-      detectDom("body").then((body) => body.append(app));
+      injectUserscriptStyle(shadowroot);
+      shadowroot.append(app);
+      detectDom("body").then((body) => body.append(container));
       return app;
     })()
   );

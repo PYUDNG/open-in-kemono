@@ -31,6 +31,7 @@
         let url;
         try {
             url = await Promise.resolve(page.value.url());
+            error.value = false;
         } catch(err) {
             logger.simple('Error', 'error while getting url');
             logger.log('Error', 'raw', 'error', err);

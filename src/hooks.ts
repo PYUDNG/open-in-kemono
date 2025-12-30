@@ -6,3 +6,5 @@ export const console: {
 } = Object.assign(Object.create(null), window.console);
 
 export const fetch = window.fetch;
+
+export const addEventListener = EventTarget.prototype.addEventListener;
