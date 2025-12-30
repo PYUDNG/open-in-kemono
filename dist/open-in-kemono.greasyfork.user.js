@@ -5,7 +5,7 @@
 // @name:zh-CN         在Kemono中打开
 // @name:zh-TW         在Kemono中打開
 // @namespace          https://greasyfork.org/zh-CN/users/667968-pyudng
-// @version            1.8.0
+// @version            1.10.0
 // @author             PY-DNG
 // @description        Open corresponding kemono page from multiple services
 // @description:en     Open corresponding kemono page from multiple services
@@ -22,6 +22,7 @@
 // @match              http*://*.fanbox.cc/*
 // @match              http*://www.patreon.com/*
 // @match              http*://*.boosty.to/*
+// @match              http*://*.gumroad.com/*
 // @require            https://cdn.jsdelivr.net/npm/vue@3.5.26/dist/vue.global.prod.js
 // @grant              GM_addValueChangeListener
 // @grant              GM_deleteValue
@@ -35,7 +36,7 @@
 // @run-at             document-start
 // ==/UserScript==
 
-(function (Vue) {
+(async function (Vue) {
   'use strict';
 
   function _interopNamespaceDefault(e) {
@@ -57,9 +58,9 @@
 
   const Vue__namespace = _interopNamespaceDefault(Vue);
 
-  const n=new Set;const o = async e=>{n.has(e)||(n.add(e),(o=>{const t=new CSSStyleSheet;t.replaceSync(o),Array.isArray(window._oikStyles)?window._oikStyles.push(t):window._oikStyles=[t];})(e));};
+  const i=new Set;const o = async e=>{i.has(e)||(i.add(e),(t=>{Array.isArray(window._oikStyles)?window._oikStyles.push(t):window._oikStyles=[t];})(e));};
 
-  o(" .oik-jump-button[data-v-b93c4b87]{border:2px solid var(--color-border);background-color:var(--color-bg);color:var(--color-text);padding:.25em;cursor:pointer;font-size:14px}.oik-root{--color-text: #1a1a1a;--color-bg: #ffffff;--color-primary: #2563eb;--color-secondary: #f3f4f6;--color-border: #e5e7eb}.oik-root.oik-dark{--color-text: #f9fafb;--color-bg: #1f1f1f;--color-primary: #60a5fa;--color-secondary: #1f2937;--color-border: #374151}.oik-root .oik-disabled{filter:grayscale(1) brightness(.8);cursor:not-allowed} ");
+  o(" .oik-jump-button[data-v-f9e475ed]{border:2px solid var(--color-border);background-color:var(--color-bg);color:var(--color-text);padding:.25em;cursor:pointer;font-size:14px}.oik-root{--color-text: #1a1a1a;--color-bg: #ffffff;--color-primary: #2563eb;--color-secondary: #f3f4f6;--color-border: #e5e7eb}.oik-root.oik-dark{--color-text: #f9fafb;--color-bg: #1f1f1f;--color-primary: #60a5fa;--color-secondary: #1f2937;--color-border: #374151}.oik-root .oik-disabled{filter:grayscale(1) brightness(.8);cursor:not-allowed} ");
 
   const console$1 = Object.assign( Object.create(null), window.console);
   const fetch = window.fetch;
@@ -288,7 +289,7 @@ triggerUrlChange(action, oldUrl, targetUrl, state) {
       const options = rootOrSelectorOrOptions;
       config = {
         selectors: Array.isArray(options.selector) ? options.selector : [options.selector || ""],
-        root: options.root,
+        root: options.root || document,
         attributes: options.attributes || false,
         callback: options.callback || null
       };
@@ -356,10 +357,6 @@ triggerUrlChange(action, oldUrl, targetUrl, state) {
       return Array.from(root.querySelectorAll(selector));
     });
   }
-  function injectUserscriptStyle(doc) {
-    const inject2 = () => doc.adoptedStyleSheets = window._oikStyles;
-    document.readyState !== "loading" ? inject2() : addEventListener.call(document, "DOMContentLoaded", inject2, { once: true });
-  }
   class UserscriptStorage {
     storage;
     defaultValues;
@@ -409,6 +406,42 @@ delete(name) {
     }
     watch(name, callback) {
       return this.storage.GM_addValueChangeListener(name, callback);
+    }
+  }
+  class UserscriptStyling {
+styles = Vue.ref({});
+    constructor() {
+    }
+setStyle(id, css) {
+      this.styles.value[id] = css;
+    }
+getStyle(id) {
+      return Object.hasOwn(this.styles.value, id) ? this.styles.value[id] : null;
+    }
+deleteStyle(id) {
+      if (Object.hasOwn(this.styles.value, id)) {
+        delete this.styles.value[id];
+        return true;
+      } else {
+        return false;
+      }
+    }
+applyTo(doc) {
+      const doApply = () => {
+        const stylesheets = Object.values(this.styles.value).map((css) => {
+          const sheet = new CSSStyleSheet();
+          sheet.replaceSync(css);
+          return sheet;
+        });
+        doc.adoptedStyleSheets = stylesheets;
+      };
+      doApply();
+      const handle = Vue.watch(this.styles, doApply, { deep: true });
+      const abort = () => {
+        handle.stop();
+        doc.adoptedStyleSheets = [];
+      };
+      return abort;
     }
   }
   function warn(msg, err) {
@@ -1588,11 +1621,11 @@ case `\\'`:
     ast.helpers = Array.from(context.helpers);
   }
   function optimize(ast) {
-    const body = ast.body;
-    if (body.type === 2) {
-      optimizeMessageNode(body);
+    const body2 = ast.body;
+    if (body2.type === 2) {
+      optimizeMessageNode(body2);
     } else {
-      body.cases.forEach((c) => optimizeMessageNode(c));
+      body2.cases.forEach((c) => optimizeMessageNode(c));
     }
     return ast;
   }
@@ -1975,22 +2008,22 @@ case `\\'`:
     return msg;
   }
   function formatParts(ctx, ast) {
-    const body = resolveBody(ast);
-    if (body == null) {
+    const body2 = resolveBody(ast);
+    if (body2 == null) {
       throw createUnhandleNodeError(
         0
 );
     }
-    const type = resolveType(body);
+    const type = resolveType(body2);
     if (type === 1) {
-      const plural = body;
+      const plural = body2;
       const cases = resolveCases(plural);
       return ctx.plural(cases.reduce((messages, c) => [
         ...messages,
         formatMessageParts(ctx, c)
       ], []));
     } else {
-      return formatMessageParts(ctx, body);
+      return formatMessageParts(ctx, body2);
     }
   }
   function formatMessageParts(ctx, node) {
@@ -2394,9 +2427,9 @@ INVALID_DATE_ARGUMENT: 18,
     return literalValueRE.test(exp);
   }
   function stripQuotes(str) {
-    const a = str.charCodeAt(0);
+    const a2 = str.charCodeAt(0);
     const b = str.charCodeAt(str.length - 1);
-    return a === b && (a === 34 || a === 39) ? str.slice(1, -1) : str;
+    return a2 === b && (a2 === 34 || a2 === 39) ? str.slice(1, -1) : str;
   }
   function getPathCharType(ch) {
     if (ch === void 0 || ch === null) {
@@ -3565,7 +3598,7 @@ isNumber(ret) && ret === NOT_REOSLVED || warnType === "translate exists" && !ret
       }
       return t2(...[arg1, arg2, assign({ resolvedMessage: true }, arg3 || {})]);
     }
-    function d(...args) {
+    function d2(...args) {
       return wrapWithDeps((context) => Reflect.apply(datetime, null, [context, ...args]), () => parseDateTimeArgs(...args), "datetime format", (root) => Reflect.apply(root.d, root, [...args]), () => MISSING_RESOLVE_VALUE, (val) => isString(val) || isArray(val));
     }
     function n(...args) {
@@ -3791,7 +3824,7 @@ isNumber(ret) && ret === NOT_REOSLVED || warnType === "translate exists" && !ret
       composer.rt = rt;
       composer.te = te;
       composer.tm = tm;
-      composer.d = d;
+      composer.d = d2;
       composer.n = n;
       composer.getDateTimeFormat = getDateTimeFormat;
       composer.setDateTimeFormat = setDateTimeFormat;
@@ -4254,7 +4287,7 @@ i18n2[NumberPartsSymbol](...args)
         composer
       ];
     };
-    const register = (el, binding) => {
+    const register2 = (el, binding) => {
       const [textContent, composer] = _process(binding);
       if (inBrowser && i18n2.global === composer) {
         el.__i18nWatcher = Vue.watch(composer.locale, () => {
@@ -4264,7 +4297,7 @@ i18n2[NumberPartsSymbol](...args)
       el.__composer = composer;
       el.textContent = textContent;
     };
-    const unregister = (el) => {
+    const unregister2 = (el) => {
       if (inBrowser && el.__i18nWatcher) {
         el.__i18nWatcher();
         el.__i18nWatcher = void 0;
@@ -4289,8 +4322,8 @@ i18n2[NumberPartsSymbol](...args)
       return { textContent };
     };
     return {
-      created: register,
-      unmounted: unregister,
+      created: register2,
+      unmounted: unregister2,
       beforeUpdate: update,
       getSSRProps
     };
@@ -4688,11 +4721,11 @@ i18n2[DatetimePartsSymbol](...args)
         }
       }
     },
-    dark: Vue.ref(false),
+    theme: Vue.ref("light"),
     enter() {
       const html = document.querySelector("html");
       const updateDark = () => {
-        this.dark.value = Object.hasOwn(html.dataset, "theme") ? html.dataset.theme === "dark" : false;
+        this.theme.value = Object.hasOwn(html.dataset, "theme") ? html.dataset.theme : null;
       };
       const observer = this.context.observer = new MutationObserver(updateDark);
       observer.observe(html, {
@@ -4747,7 +4780,7 @@ i18n2[DatetimePartsSymbol](...args)
         }
       }
     },
-    dark: Vue.ref(false)
+    theme: Vue.ref("light")
   });
   const subscribestar = defineWebsite({
     checker: {
@@ -4767,11 +4800,11 @@ i18n2[DatetimePartsSymbol](...args)
         }
       }
     },
-    dark: Vue.ref(systemDark.value),
+    theme: Vue.ref(systemDark.value ? "dark" : "light"),
     enter() {
       const html = document.querySelector("html");
       const updateDark = () => {
-        this.dark.value = Object.hasOwn(html.dataset, "theme") ? html.dataset.theme === "dark" : systemDark.value;
+        this.theme.value = Object.hasOwn(html.dataset, "theme") ? html.dataset.theme : systemDark.value ? "dark" : "light";
       };
       const observer = this.context.observer = new MutationObserver(updateDark);
       observer.observe(html, {
@@ -4805,14 +4838,14 @@ i18n2[DatetimePartsSymbol](...args)
         }
       }
     },
-    dark: Vue.ref(false)
+    theme: Vue.ref("light")
   });
   const fanbox = defineWebsite({
     checker: {
       type: "endhost",
       value: "fanbox.cc"
     },
-    dark: Vue.ref(false),
+    theme: Vue.ref("light"),
     pages: {
       creator: {
         mode: "or",
@@ -4898,7 +4931,7 @@ general: {
         }
       }
     },
-    dark: Vue.ref(false)
+    theme: Vue.ref("light")
   });
   const boosty = defineWebsite({
     mode: "and",
@@ -4938,18 +4971,143 @@ general: {
         }
       }
     },
-    dark: Vue.ref(false)
+    theme: Vue.ref("light")
   });
+  const body = await( detectDom("body"));
+  const gumroad = defineWebsite({
+    mode: "and",
+    checker: [{
+      type: "endhost",
+      value: "gumroad.com"
+    }, {
+type: "host",
+      value: "gumroad.com",
+      invert: true
+    }, {
+type: "host",
+      value: "www.gumroad.com",
+      invert: true
+    }],
+    pages: {
+post: {
+        checker: {
+          type: "startpath",
+          value: "/l/"
+        },
+        url() {
+          const data = JSON.parse(document.querySelector('.js-react-on-rails-component[data-component-name="ProfileProductPage"]')?.innerHTML ?? "{}");
+          const userID = data?.creator_profile?.external_id;
+          const postID = data?.product?.permalink;
+          if ((userID ?? postID ?? null) === null) {
+            logger.simple("Error", "cannot get userID or postID");
+            throw new Error("gumroad.url: cannot get userID or postID");
+          }
+          return `https://${domain}/gumroad/user/${userID}/post/${postID}`;
+        }
+      },
+general: {
+        checker: {
+          type: "switch",
+          value: true
+        },
+        url() {
+          const userID = JSON.parse(document.querySelector('.js-react-on-rails-component[data-component-name="Profile"]')?.innerHTML ?? "{}")?.creator_profile?.external_id ?? null;
+          if (!userID) {
+            logger.simple("Error", "cannot get userID");
+            throw new Error("gumroad.url: cannot get userID");
+          }
+          return `https://${domain}/gumroad/user/${userID}`;
+        }
+      }
+    },
+theme: Vue.ref("gumroad"),
+get themes() {
+      const pageFG = getComputedStyle(body).color;
+      const pageBG = getComputedStyle(body).backgroundColor;
+      const fg = pageFG;
+      const bg = generateTransitionColor(pageFG, pageBG, 0.05);
+      const border = generateTransitionColor(pageFG, pageBG, 0.2);
+      return {
+        gumroad: (
+`
+                .oik-root[data-theme="gumroad"] {
+                    --color-text: ${fg};      /* 前景色 */
+                    --color-bg: ${bg};        /* 深色背景 */
+                    --color-border: ${border};    /* 边框色 */
+                }
+            `
+        )
+      };
+    }
+  });
+  function generateTransitionColor(targetColor, startColor, transitionRatio = 0.1) {
+    const parseRgbaColor = (colorStr) => {
+      const rgbaPattern = /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([0-9.]+)\s*)?\)/i;
+      const matches2 = colorStr.match(rgbaPattern);
+      if (!matches2) {
+        return { r: 0, g: 0, b: 0, a: 1 };
+      }
+      const r = Math.min(255, Math.max(0, parseInt(matches2[1], 10)));
+      const g = Math.min(255, Math.max(0, parseInt(matches2[2], 10)));
+      const b = Math.min(255, Math.max(0, parseInt(matches2[3], 10)));
+      const a2 = matches2[4] ? Math.min(1, Math.max(0, parseFloat(matches2[4]))) : 1;
+      return { r, g, b, a: a2 };
+    };
+    try {
+      const targetRgba = parseRgbaColor(targetColor);
+      const startRgba = parseRgbaColor(startColor);
+      const newR = Math.round(startRgba.r + (targetRgba.r - startRgba.r) * transitionRatio);
+      const newG = Math.round(startRgba.g + (targetRgba.g - startRgba.g) * transitionRatio);
+      const newB = Math.round(startRgba.b + (targetRgba.b - startRgba.b) * transitionRatio);
+      const newA = parseFloat((startRgba.a + (targetRgba.a - startRgba.a) * transitionRatio).toFixed(2));
+      return `rgba(${newR}, ${newG}, ${newB}, ${newA})`;
+    } catch (error) {
+      logger.simple("Error", "颜色解析或计算失败，使用默认过渡色:");
+      logger.log("Error", "raw", "error", error);
+      return "rgba(240, 240, 240, 0.9)";
+    }
+  }
   const rules = Object.freeze( Object.defineProperty({
     __proto__: null,
     boosty,
     dlsite,
     fanbox,
     fantia,
+    gumroad,
     patreon,
     pixiv,
     subscribestar
   }, Symbol.toStringTag, { value: "Module" }));
+  const defaultCss = ".oik-root{--color-text: #1a1a1a;--color-bg: #ffffff;--color-primary: #2563eb;--color-secondary: #f3f4f6;--color-border: #e5e7eb}";
+  var a;
+  const d = (b) => (a = document.createElement("style"), a.append(b), a);
+  const defaultTheme = d(defaultCss);
+  const darkCss = ".oik-root[data-theme=dark]{--color-text: #f9fafb;--color-bg: #1f1f1f;--color-primary: #60a5fa;--color-secondary: #1f2937;--color-border: #374151}";
+  const dark = d(darkCss);
+  const lightCss = ".oik-root[data-theme=light]{--color-text: #1a1a1a;--color-bg: #ffffff;--color-primary: #2563eb;--color-secondary: #f3f4f6;--color-border: #e5e7eb}";
+  const light = d(lightCss);
+  const styling = new UserscriptStyling();
+  const load = () => {
+    {
+      const importedStyles2 = window._oikStyles;
+      importedStyles2.forEach((css, i) => styling.setStyle(`__imported[${i}]__`, css));
+    }
+  };
+  document.readyState === "loading" ? addEventListener.call(document, "DOMContentLoaded", load, { once: true }) : load();
+  const importedStyles = { defaultTheme, dark, light };
+  const themes = Object.entries(importedStyles).reduce(
+    (obj, [id, style]) => Object.assign(obj, { [id]: style.innerHTML }),
+    {}
+  );
+  Object.entries(themes).forEach(([id, css]) => register(id, css));
+  function register(id, css) {
+    themes[id] = css;
+    styling.setStyle(`theme-${id}`, css);
+  }
+  function unregister(id) {
+    delete themes[id];
+    styling.deleteStyle(`theme-${id}`);
+  }
   const locate = () => {
     for (const [websiteName2, website2] of Object.entries(rules)) {
       if (website2.checker && !testChecker(website2.checker, website2.mode ?? "or")) continue;
@@ -4978,23 +5136,35 @@ general: {
     logger.simple("Detail", `Updated location: ${websiteName.value} / ${pageName.value}`);
   });
   Vue.watch(website, (newWebsite, oldWebsite) => {
-    Vue.toRaw(oldWebsite)?.leave?.();
-    Vue.toRaw(newWebsite)?.enter?.();
+    const o = Vue.toRaw(oldWebsite);
+    const n = Vue.toRaw(newWebsite);
+    o?.leave?.();
+    n?.enter?.();
+    Object.hasOwn(o ?? {}, "themes") && Object.keys(o.themes).forEach((id) => unregister(id));
+    Object.hasOwn(n ?? {}, "themes") && Object.entries(n.themes).forEach(([id, css]) => register(id, css));
   }, {
     immediate: true
   });
   Vue.watch(page, (newPage, oldPage) => {
-    Vue.toRaw(oldPage)?.leave?.();
-    Vue.toRaw(newPage)?.enter?.();
+    const o = Vue.toRaw(oldPage);
+    const n = Vue.toRaw(newPage);
+    o?.leave?.();
+    n?.enter?.();
+    Object.hasOwn(o ?? {}, "themes") && Object.keys(o.themes).forEach((id) => unregister(id));
+    Object.hasOwn(n ?? {}, "themes") && Object.entries(n.themes).forEach(([id, css]) => register(id, css));
   }, {
     immediate: true
   });
+  const _hoisted_1 = ["data-theme"];
   const _sfc_main = Vue.defineComponent({
     __name: "App",
     setup(__props) {
       const { t: t2 } = useI18n();
       const loading = Vue.ref(false);
       const error = Vue.ref(false);
+      const theme = Vue.computed(() => {
+        return page.value?.theme ?? website.value?.theme ?? false;
+      });
       async function doJump() {
         if (loading.value) return;
         if (!website.value || !page.value) return;
@@ -5023,7 +5193,8 @@ general: {
       }
       return (_ctx, _cache) => {
         return Vue.openBlock(), Vue.createElementBlock("div", {
-          class: Vue.normalizeClass(["oik-root", { "oik-dark": Vue.unref(page)?.dark ?? Vue.unref(website)?.dark ?? false }])
+          class: "oik-root",
+          "data-theme": theme.value
         }, [
           Vue.withDirectives(Vue.createElementVNode("div", {
             class: Vue.normalizeClass(["oik-jump-button", { ["oik-disabled"]: loading.value }]),
@@ -5031,7 +5202,7 @@ general: {
           }, Vue.toDisplayString(loading.value ? Vue.unref(t2)("button.loading") : error.value ? Vue.unref(t2)("button.error") : Vue.unref(t2)("button.jump")), 3), [
             [Vue.vShow, Vue.unref(page)]
           ])
-        ], 2);
+        ], 8, _hoisted_1);
       };
     }
   });
@@ -5042,7 +5213,7 @@ general: {
     }
     return target;
   };
-  const JumpButton = _export_sfc(_sfc_main, [["__scopeId", "data-v-b93c4b87"]]);
+  const JumpButton = _export_sfc(_sfc_main, [["__scopeId", "data-v-f9e475ed"]]);
   const t = i18n.global.t;
   Vue.createApp(JumpButton).use(i18n).mount(
     (() => {
@@ -5050,9 +5221,9 @@ general: {
       const shadowroot = container.attachShadow({ mode: "open" });
       const app = document.createElement("div");
       app.style.cssText = "position: fixed; right: 0; bottom: 0; padding: 0; margin: 0; border: 0; z-index: 10000;";
-      injectUserscriptStyle(shadowroot);
+      styling.applyTo(shadowroot);
       shadowroot.append(app);
-      detectDom("body").then((body) => body.append(container));
+      detectDom("body").then((body2) => body2.append(container));
       return app;
     })()
   );

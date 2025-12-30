@@ -45,5 +45,5 @@ export const boosty = defineWebsite({
             }
         },
     },
-    dark: ref(false),
+    theme: ref('light'),
 });

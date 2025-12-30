@@ -1,0 +1,7 @@
+.oik-root[data-theme="dark"] {
+    --color-text: #f9fafb;      /* 浅色文本 */
+    --color-bg: #1f1f1f;        /* 深色背景 */
+    --color-primary: #60a5fa;   /* 主色调（提亮适配深色） */
+    --color-secondary: #1f2937; /* 辅助色 */
+    --color-border: #374151;    /* 边框色 */
+}

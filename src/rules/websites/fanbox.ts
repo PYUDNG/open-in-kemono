@@ -8,7 +8,7 @@ export const fanbox = defineWebsite({
         type: 'endhost',
         value: 'fanbox.cc'
     },
-    dark: ref(false),
+    theme: ref('light'),
     pages: {
         creator: {
             mode: 'or',

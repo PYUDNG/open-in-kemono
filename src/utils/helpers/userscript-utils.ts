@@ -1,4 +1,5 @@
 import { GM_addValueChangeListener, GM_deleteValue, GM_getValue, GM_listValues, GM_setValue, GmAddValueChangeListenerType, GmValueListenerId } from "$";
+import { ref, watch } from "vue";
 
 export interface GM_Storage {
     GM_getValue: typeof GM_getValue,
@@ -133,5 +134,72 @@ export class UserscriptStorage<D extends Record<string, any>> {
 
     watch(name: string, callback: Parameters<GmAddValueChangeListenerType>[1]): GmValueListenerId {
         return this.storage.GM_addValueChangeListener(name, callback);
+    }
+}
+
+/**
+ * 用户脚本CSS样式管理器
+ */
+export class UserscriptStyling {
+    /**
+     * 所有用户脚本样式CSS代码
+     */
+    private styles = ref<Record<string, string>>({});
+
+    constructor() {}
+
+    /**
+     * 设置一个样式
+     * @param id 样式id，全局唯一
+     * @param css 样式css代码
+     */
+    setStyle(id: string, css: string): void {
+        this.styles.value[id] = css;
+    }
+
+    /**
+     * 获取一个样式的css代码
+     * @param id 样式id
+     */
+    getStyle(id: string): string | null {
+        return Object.hasOwn(this.styles.value, id) ? this.styles.value[id] : null;
+    }
+
+    /**
+     * 删除一个样式
+     * @param id 样式id
+     * @returns 若成功删除返回true，若给定id对应样式不存在返回false
+     */
+    deleteStyle(id: string): boolean {
+        if (Object.hasOwn(this.styles.value, id)) {
+            delete this.styles.value[id];
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 将所有样式**持续**应用到给定目标  
+     * 当管理器的样式有所改变时，实时更改应用的样式
+     * @param doc 应用目标
+     * @returns 取消应用样式到该目标的方法
+     */
+    applyTo(doc: DocumentOrShadowRoot): () => void {
+        const doApply = () => {
+            const stylesheets = Object.values(this.styles.value).map(css => {
+                const sheet = new CSSStyleSheet();
+                sheet.replaceSync(css);
+                return sheet;
+            });
+            doc.adoptedStyleSheets = stylesheets;
+        };
+        doApply();
+        const handle = watch(this.styles, doApply, { deep: true });
+        const abort = () => {
+            handle.stop();
+            doc.adoptedStyleSheets = [];
+        };
+        return abort;
     }
 }

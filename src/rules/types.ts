@@ -20,10 +20,15 @@ export interface Page<C = undefined> {
     url: () => string | Promise<string>;
 
     /**
-     * 该页面是否处于深色模式
-     * @default ref(false)
+     * 为页面应用的主题
+     * @default ref(null)
      */
-    dark?: Ref<boolean>,
+    theme?: Ref<string | null>,
+
+    /**
+     * 注册新主题，格式为{ [themeId]: cssCode }
+     */
+    themes?: Record<string, string>,
 
     /**
      * 生命周期回调：进入该页面时触发
@@ -65,7 +70,16 @@ export interface Website<
      */
     checker?: Checker | Checker[];
 
-    dark: Ref<boolean>,
+    /**
+     * 为网站应用的主题
+     * @default ref(null)
+     */
+    theme?: Ref<string | null>,
+
+    /**
+     * 注册新主题，格式为{ [themeId]: cssCode }
+     */
+    themes?: Record<string, string>,
 
     /**
      * 生命周期回调：进入该网站时触发

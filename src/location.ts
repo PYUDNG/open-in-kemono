@@ -1,6 +1,7 @@
 import { ref, watch, toRaw } from 'vue';
 import * as rules from './rules/main.js';
 import { logger, testChecker, URLChangeMonitor } from './utils/main.js';
+import { register, unregister } from './themes/main.js';
 
 // 根据rules获取当前所处的网站和页面
 const locate = () => {
@@ -33,16 +34,28 @@ urlMonitor.onUrlChange(() => {
     logger.simple('Detail', `Updated location: ${ websiteName.value } / ${ pageName.value }`);
 });
 
-// 当匹配的网站/页面规则变化时，回调enter/leave生命周期钩子
+// 当匹配的网站/页面规则变化时，回调enter/leave生命周期钩子，
+// 并注册新规则提供的主题、注销旧规则提供的主题
+// 注意这里在判断是否有themes属性时使用Object.hasOwn而不是可选链运算符
+// 是因为themes属性重度依赖于网站/页面，因而可能被写成getter实时生成
+// 此时使用Object.hasOwn判断属性是否存在可以节省一次计算（调用）
 watch(website, (newWebsite, oldWebsite) => {
-    toRaw(oldWebsite)?.leave?.();
-    toRaw(newWebsite)?.enter?.();
+    const o = toRaw(oldWebsite);
+    const n = toRaw(newWebsite);
+    o?.leave?.();
+    n?.enter?.();
+    Object.hasOwn(o ?? {}, 'themes') && Object.keys(o!.themes!).forEach(id => unregister(id));
+    Object.hasOwn(n ?? {}, 'themes') && Object.entries(n!.themes!).forEach(([id, css]) => register(id, css));
 }, {
     immediate: true,
 });
 watch(page, (newPage, oldPage) => {
-    toRaw(oldPage)?.leave?.();
-    toRaw(newPage)?.enter?.();
+    const o = toRaw(oldPage);
+    const n = toRaw(newPage);
+    o?.leave?.();
+    n?.enter?.();
+    Object.hasOwn(o ?? {}, 'themes') && Object.keys(o!.themes!).forEach(id => unregister(id));
+    Object.hasOwn(n ?? {}, 'themes') && Object.entries(n!.themes!).forEach(([id, css]) => register(id, css));
 }, {
     immediate: true,
 });

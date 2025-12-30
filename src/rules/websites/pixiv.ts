@@ -65,12 +65,12 @@ export const pixiv = defineWebsite({
             }
         },
     },
-    dark: ref(false),
+    theme: ref('light'),
     enter() {
         const html = document.querySelector('html')!;
         const updateDark = () => {
-            this.dark.value = Object.hasOwn(html.dataset, 'theme') ?
-                html.dataset.theme === 'dark' : false;
+            this.theme!.value = Object.hasOwn(html.dataset, 'theme') ?
+                html.dataset.theme as 'light' | 'dark' : null;
         }
         const observer = this.context!.observer = new MutationObserver(updateDark);
         observer.observe(html, {

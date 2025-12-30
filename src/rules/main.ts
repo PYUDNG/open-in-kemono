@@ -5,3 +5,4 @@ export * from './websites/dlsite.js';
 export * from './websites/fanbox.js';
 export * from './websites/patreon.js';
 export * from './websites/boosty.js';
+export * from './websites/gumroad.js';

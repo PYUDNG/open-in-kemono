@@ -41,5 +41,5 @@ export const fantia = defineWebsite({
             },
         },
     },
-    dark: ref(false),
+    theme: ref('light'),
 });

@@ -1,0 +1,7 @@
+.oik-root {
+    --color-text: #1a1a1a;      /* 文本色 */
+    --color-bg: #ffffff;        /* 背景色 */
+    --color-primary: #2563eb;   /* 主色调 */
+    --color-secondary: #f3f4f6; /* 辅助色 */
+    --color-border: #e5e7eb;    /* 边框色 */
+}

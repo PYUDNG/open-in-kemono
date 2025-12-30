@@ -43,6 +43,7 @@ export default defineConfig({
                 ],
                 "run-at": 'document-start',
             },
+            styleImport: true,
             server: {
                 open: true,
                 mountGmApi: true,
@@ -53,11 +54,9 @@ export default defineConfig({
                     vue: cdn.jsdelivr('Vue', 'dist/vue.global.prod.js'),
                 },
                 cssSideEffects: /* js */ `css => {
-                    const style = new CSSStyleSheet();
-                    style.replaceSync(css);
                     Array.isArray(window._oikStyles) ?
-                        window._oikStyles.push(style) :
-                        (window._oikStyles = [style]);
+                        window._oikStyles.push(css) :
+                        (window._oikStyles = [css]);
         }`,
             },
         }),

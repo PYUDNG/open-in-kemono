@@ -20,12 +20,13 @@ export const subscribestar = defineWebsite({
             }
         }
     },
-    dark: ref(systemDark.value),
+    theme: ref(systemDark.value ? 'dark' : 'light'),
     enter() {
         const html = document.querySelector('html')!;
         const updateDark = () => {
-            this.dark.value = Object.hasOwn(html.dataset, 'theme') ?
-                html.dataset.theme === 'dark' : systemDark.value;
+            this.theme!.value = Object.hasOwn(html.dataset, 'theme') ?
+                html.dataset.theme as 'light' | 'dark':
+                systemDark.value ? 'dark' : 'light';
         }
         const observer = this.context!.observer = new MutationObserver(updateDark);
         observer.observe(html, {

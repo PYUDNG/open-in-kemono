@@ -19,5 +19,5 @@ export const dlsite = defineWebsite({
             }
         }
     },
-    dark: ref(false),
+    theme: ref('light'),
 });

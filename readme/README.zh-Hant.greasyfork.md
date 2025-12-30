@@ -30,4 +30,6 @@
 |    Boosty     |               `/creator-id`                |    ✔     |
 |               |          `/creator-id/posts/uuid`          |    ✔     |
 | SubscribeStar |               `/creator-id`                |    ✔     |
+|    Gumroad    |           `creator.gumroad.com`            |    ✔     |
+|               |     `creator.gumroad.com/l/post-title`     |    ✔     |
 |    DLSite     | `/home/circle/profile/=/maker_id/RG123456` |    ✔     |

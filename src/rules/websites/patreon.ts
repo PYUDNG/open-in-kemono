@@ -59,5 +59,5 @@ export const patreon = defineWebsite({
             }
         },
     },
-    dark: ref(false),
+    theme: ref('light'),
 });

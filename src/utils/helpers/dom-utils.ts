@@ -1,11 +1,9 @@
-import { addEventListener } from "@/hooks";
-
 // DOM检测选项
-interface DetectDomOptions {
-    root: Node;
+interface DetectDomOptions<E extends HTMLElement = HTMLElement> {
+    root?: Node;
     selector?: string | string[];
     attributes?: boolean;
-    callback?: (element: HTMLElement) => void;
+    callback?: (element: E) => void;
 }
 
 /**
@@ -30,7 +28,7 @@ interface DetectDomOptions {
  * @returns MutationObserver
  */
 export function detectDom(selector: string | string[]): Promise<HTMLElement>;
-export function detectDom(options: DetectDomOptions): MutationObserver;
+export function detectDom<E extends HTMLElement>(options: DetectDomOptions<E>): MutationObserver;
 export function detectDom(
     root: Node,
     selectors?: string | string[],
@@ -64,7 +62,7 @@ export function detectDom(
         const options = rootOrSelectorOrOptions as DetectDomOptions;
         config = {
             selectors: Array.isArray(options.selector) ? options.selector : [options.selector || ''],
-            root: options.root,
+            root: options.root || document,
             attributes: options.attributes || false,
             callback: options.callback || null
         };
@@ -148,11 +146,4 @@ function selectAll(root: Node, selectors: string[]): HTMLElement[] {
     return selectors.flatMap(selector => {
         return Array.from(root.querySelectorAll<HTMLElement>(selector));
     });
-}
-
-export function injectUserscriptStyle(doc: DocumentOrShadowRoot): void {
-    const inject = () => doc.adoptedStyleSheets = (window as any)._oikStyles;
-    document.readyState !== 'loading' ?
-        inject() :
-        addEventListener.call(document, 'DOMContentLoaded', inject, { once: true });
 }

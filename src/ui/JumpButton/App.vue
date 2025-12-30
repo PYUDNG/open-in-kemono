@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { useI18n } from 'vue-i18n';
-    import { ref } from 'vue';
+    import { ref, computed } from 'vue';
     import { website, page } from '@/location';
     import { GM_openInTab } from '$';
     import storage from '@/storage.js';
@@ -14,6 +14,11 @@
 
     /** 是否发生了错误 */
     const error = ref(false);
+
+    /** 当前应用的主题 */
+    const theme = computed(() => {
+        return page.value?.theme ?? website.value?.theme ?? false;
+    });
 
     /**
      * 根据当前页面的对应规则，执行跳转
@@ -56,7 +61,7 @@
 <template>
     <div
         class="oik-root"
-        :class="{ 'oik-dark': page?.dark ?? website?.dark ?? false }"
+        :data-theme="theme"
     >
         <div
             v-show="page"
