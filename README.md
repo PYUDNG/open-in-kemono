@@ -28,6 +28,9 @@ You can choose one of the following to install:
 |    Fanbox     |         `creator.fanbox.cc/posts`          |     ✔     |
 |               |      `creator.fanbox.cc/posts/123456`      |     ✔     |
 |               |         `creator.fanbox.cc/plans`          |     ✔     |
+|               |       `www.fanbox.cc/@creator/posts`       |     ✔     |
+|               |   `www.fanbox.cc/@creator/posts/123456`    |     ✔     |
+|               |       `www.fanbox.cc/@creator/plans`       |     ✔     |
 |               |      `creator.fanbox.cc/plans/123456`      |     ✔     |
 |    Patreon    |             `Creator homepage`             |     ✔     |
 |               |             `Collections list`             |     ✔     |

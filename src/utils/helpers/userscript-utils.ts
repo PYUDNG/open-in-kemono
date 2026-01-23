@@ -185,7 +185,7 @@ export class UserscriptStyling {
      * @param doc 应用目标
      * @returns 取消应用样式到该目标的方法
      */
-    applyTo(doc: DocumentOrShadowRoot): () => void {
+    applyTo(doc: Document | ShadowRoot): () => void {
         const doApply = () => {
             const stylesheets = Object.values(this.styles.value).map(css => {
                 const sheet = new CSSStyleSheet();

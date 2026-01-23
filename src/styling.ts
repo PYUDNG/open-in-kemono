@@ -1,5 +1,5 @@
-import { addEventListener } from "./hooks";
-import { detectDom, UserscriptStyling } from "./utils/main";
+import { addEventListener } from "./hooks.js";
+import { detectDom, UserscriptStyling } from "./utils/main.js";
 
 export const styling = new UserscriptStyling();
 
@@ -17,6 +17,7 @@ const load = () => {
             selector: 'style[data-vite-dev-id]',
             callback(style: HTMLStyleElement) {
                 styling.setStyle(`__imported[${i++}]__`, style.innerHTML);
+                style.remove();
             },
         })
     }

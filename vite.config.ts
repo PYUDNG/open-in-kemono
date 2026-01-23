@@ -57,7 +57,7 @@ export default defineConfig({
                     Array.isArray(window._oikStyles) ?
                         window._oikStyles.push(css) :
                         (window._oikStyles = [css]);
-        }`,
+                }`,
             },
         }),
     ],
