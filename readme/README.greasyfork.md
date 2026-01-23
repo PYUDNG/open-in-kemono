@@ -23,6 +23,7 @@ You can find this project on
 |               |       `www.fanbox.cc/@creator/posts`       |     ✔     |
 |               |   `www.fanbox.cc/@creator/posts/123456`    |     ✔     |
 |               |       `www.fanbox.cc/@creator/plans`       |     ✔     |
+|               |   `www.fanbox.cc/@creator/plans/123456`    |     ✔     |
 |    Patreon    |             `Creator homepage`             |     ✔     |
 |               |             `Collections list`             |     ✔     |
 |               |                   `Post`                   |     ✔     |
