@@ -12,6 +12,7 @@
         },
         "domain": {
             "label": "Kemono域名: {domain}",
+            "title": "跳转到Kemono时，使用的网站地址",
             "prompt": "请设置希望跳转的kemono域名："
         }
     }

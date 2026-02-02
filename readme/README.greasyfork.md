@@ -6,6 +6,9 @@ You can find this project on
 - [Github](https://github.com/PYUDNG/open-in-kemono)
 - [Greasyfork](https://greasyfork.org/scripts/559907)
 
+## Usage
+After installation, a "Jump to Kemono" button will appear in the **bottom right corner** of supported pages. Click it to open the corresponding Kemono page for the current content.
+
 ## Supported services
 > **Tip: feature request**  
 > This script is still in active development, feel free to request new services or pages by [opening a new issue](https://github.com/PYUDNG/open-in-kemono/issues)
@@ -37,3 +40,4 @@ You can find this project on
 |    Gumroad    |           `creator.gumroad.com`            |     ✔     |
 |               |     `creator.gumroad.com/l/post-title`     |     ✔     |
 |    DLSite     | `/home/circle/profile/=/maker_id/RG123456` |     ✔     |
+

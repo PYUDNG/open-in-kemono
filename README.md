@@ -15,6 +15,9 @@ You can choose one of the following to install:
 - [Install from Github](https://raw.githubusercontent.com/PYUDNG/open-in-kemono/main/dist/open-in-kemono.user.js)
 - [Install from Greasyfork](https://greasyfork.org/zh-CN/scripts/559907-open-in-kemono)
 
+## Usage
+After installation, a "Jump to Kemono" button will appear in the **bottom right corner** of supported pages. Click it to open the corresponding Kemono page for the current content.
+
 ## Supported services
 > **Tip: feature request**  
 > This script is still in active development, feel free to request new services or pages by [opening a new issue](https://github.com/PYUDNG/open-in-kemono/issues)

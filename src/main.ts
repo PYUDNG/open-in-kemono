@@ -46,7 +46,7 @@ const registerDomainMenu = () => domainMenuId = GM_registerMenuCommand(
     {
         id: domainMenuId,
         autoClose: false,
-        title: t('menu.domain.label')
+        title: t('menu.domain.title')
     }
 );
 registerDomainMenu();

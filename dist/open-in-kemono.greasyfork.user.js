@@ -5,7 +5,7 @@
 // @name:zh-CN         在Kemono中打开
 // @name:zh-TW         在Kemono中打開
 // @namespace          https://greasyfork.org/zh-CN/users/667968-pyudng
-// @version            1.11.0
+// @version            1.11.1
 // @author             PY-DNG
 // @description        Open corresponding kemono page from multiple services
 // @description:en     Open corresponding kemono page from multiple services
@@ -4614,19 +4614,19 @@ i18n2[DatetimePartsSymbol](...args)
     setDevToolsHook(target.__INTLIFY_DEVTOOLS_GLOBAL_HOOK__);
   }
   const button$2 = { "jump": "跳转到Kemono", "loading": "加载中...", "error": "发生了错误" };
-  const menu$2 = { "newtab": { "true": "[✔] 在新标签页中打开", "false": "[-] 在新标签页中打开", "title": "跳转到Kemono时，是新建标签页打开Kemono页面，还是直接将当前标签页跳转到Kemono页面" }, "domain": { "label": "Kemono域名: {domain}", "prompt": "请设置希望跳转的kemono域名：" } };
+  const menu$2 = { "newtab": { "true": "[✔] 在新标签页中打开", "false": "[-] 在新标签页中打开", "title": "跳转到Kemono时，是新建标签页打开Kemono页面，还是直接将当前标签页跳转到Kemono页面" }, "domain": { "label": "Kemono域名: {domain}", "title": "跳转到Kemono时，使用的网站地址", "prompt": "请设置希望跳转的kemono域名：" } };
   const zhHans = {
     button: button$2,
     menu: menu$2
   };
   const button$1 = { "jump": "跳轉到Kemono", "loading": "載入中...", "error": "發生了錯誤" };
-  const menu$1 = { "newtab": { "true": "[✔] 在新標籤頁中打開", "false": "[-] 在新標籤頁中打開", "title": "跳轉到Kemono時，是新增標籤頁打開Kemono頁面，還是直接將目前標籤頁跳轉到Kemono頁面" }, "domain": { "label": "Kemono域名: {domain}", "prompt": "請設定希望跳轉的kemono網域：" } };
+  const menu$1 = { "newtab": { "true": "[✔] 在新標籤頁中打開", "false": "[-] 在新標籤頁中打開", "title": "跳轉到Kemono時，是新增標籤頁打開Kemono頁面，還是直接將目前標籤頁跳轉到Kemono頁面" }, "domain": { "label": "Kemono域名: {domain}", "title": "跳轉到Kemono時，使用的網站地址", "prompt": "請設定希望跳轉的kemono網域：" } };
   const zhHant = {
     button: button$1,
     menu: menu$1
   };
   const button = { "jump": "Open in Kemono", "loading": "loading...", "error": "something went wrong" };
-  const menu = { "newtab": { "true": "[✔] Open in new tab", "false": "[-] Open in new tab", "title": "Open the Kemono page in a new tab or directly redirect the current tab to the Kemono page" }, "domain": { "label": "Kemono domain: {domain}", "prompt": "Please set the desired Kemono domain to redirect to:" } };
+  const menu = { "newtab": { "true": "[✔] Open in new tab", "false": "[-] Open in new tab", "title": "Open the Kemono page in a new tab or directly redirect the current tab to the Kemono page" }, "domain": { "label": "Kemono domain: {domain}", "title": "The website address used when redirecting to Kemono", "prompt": "Please set the desired Kemono domain to redirect to:" } };
   const en = {
     button,
     menu
@@ -5269,7 +5269,7 @@ get themes() {
     {
       id: domainMenuId,
       autoClose: false,
-      title: t("menu.domain.label")
+      title: t("menu.domain.title")
     }
   );
   registerDomainMenu();

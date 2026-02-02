@@ -5,6 +5,9 @@
 - [Github](https://github.com/PYUDNG/open-in-kemono)
 - [Greasyfork](https://greasyfork.org/scripts/559907)
 
+## 使用方法
+安装后，在脚本支持的页面的**右下角**，将会出现一个"跳转到Kemono"的按钮，点击即可打开当前内容对应的Kemono页面
+
 ## 支持的网站
 > **提示：功能需求提交**  
 > 本脚本仍在持续开发中，你可以通过[提交新issue](https://github.com/PYUDNG/open-in-kemono/issues)来申请新增支持的服务或页面
@@ -36,3 +39,4 @@
 |    Gumroad    |           `creator.gumroad.com`            |    ✔     |
 |               |     `creator.gumroad.com/l/post-title`     |    ✔     |
 |    DLSite     | `/home/circle/profile/=/maker_id/RG123456` |    ✔     |
+

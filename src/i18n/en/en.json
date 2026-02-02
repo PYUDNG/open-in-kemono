@@ -12,6 +12,7 @@
         },
         "domain": {
             "label": "Kemono domain: {domain}",
+            "title": "The website address used when redirecting to Kemono",
             "prompt": "Please set the desired Kemono domain to redirect to:"
         }
     }
