@@ -49,7 +49,7 @@ export default defineConfig({
                 mountGmApi: true,
             },
             build: {
-                fileName: pkg.name + '.user.js',
+                fileName: pkg.name + '.greasyfork.user.js',
                 externalGlobals: {
                     vue: cdn.jsdelivr('Vue', 'dist/vue.global.prod.js'),
                 },
@@ -57,7 +57,7 @@ export default defineConfig({
                     Array.isArray(window._oikStyles) ?
                         window._oikStyles.push(css) :
                         (window._oikStyles = [css]);
-                }`,
+        }`,
             },
         }),
     ],
@@ -67,7 +67,7 @@ export default defineConfig({
         },
     },
     build: {
-        minify: true,
-        emptyOutDir: false,
+        minify: false,
+        emptyOutDir: true,
     },
 });
