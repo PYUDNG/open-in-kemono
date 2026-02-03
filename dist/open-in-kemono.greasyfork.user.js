@@ -36,6 +36,35 @@
 // @run-at             document-start
 // ==/UserScript==
 
+// ============================================================================
+// 📝 源代码说明 / Source Code Notice
+// 
+// 你好！这是用户脚本的构建版本，不是原始源代码。
+// 这个脚本是用 TypeScript 和 Vue.js 开发的，通过构建工具编译成 JavaScript。
+// 
+// Hello! This is the built version of the userscript, not the original source code.
+// This script is developed in TypeScript and Vue.js, compiled to JavaScript via build tools.
+// 
+// 🔍 查看完整源代码 / View Full Source Code:
+// https://github.com/PYUDNG/open-in-kemono
+// 
+// 仓库中包含 / Repository includes:
+// • TypeScript 源代码 (.ts, .tsx) / TypeScript source files
+// • Vue.js 组件 (.vue) / Vue.js components
+// • 构建配置和开发脚本 / Build configurations and development scripts
+// • 详细的文档说明 / Detailed documentation
+// 
+// 这个未压缩版本是为了满足 GreasyFork 的代码审查要求而提供的。
+// 如果你愿意，也可以阅读这个构建版本的代码来了解脚本的实际执行逻辑。
+// 
+// This unminified version is provided to comply with GreasyFork's code review requirements.
+// If you'd like, you can also read this built version to understand the script's actual execution logic.
+// 
+// 有任何疑问或建议？欢迎在 GitHub 上提交 Issue！
+// Questions or suggestions? Feel free to submit an Issue on GitHub!
+// ============================================================================
+
+
 (async function (Vue) {
   'use strict';
 
